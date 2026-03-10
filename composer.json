@@ -1,0 +1,16 @@
+{
+    "name": "ahmed-wael/cafeteria",
+    "authors": [
+        {
+            "name": "wael",
+            "email": "ahmed.wael2048@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Core\\": "core/"
+        }
+    }
+}
