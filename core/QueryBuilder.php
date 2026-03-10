@@ -103,10 +103,11 @@ class QueryBuilder
     public function update($data)
     {
         $fields = [];
+        $updateBindings = [];
 
         foreach ($data as $column => $value) {
             $fields[] = "$column = ?";
-            $this->bindings[] = $value;
+            $updateBindings[] = $value;
         }
 
         $fields = implode(",", $fields);
@@ -115,9 +116,11 @@ class QueryBuilder
 
         $sql .= $this->buildWhere();
 
+        $allBindings = array_merge($updateBindings, $this->bindings);
+
         $stmt = $this->db->prepare($sql);
 
-        return $stmt->execute($this->bindings);
+        return $stmt->execute($allBindings);
     }
 
     public function delete()
