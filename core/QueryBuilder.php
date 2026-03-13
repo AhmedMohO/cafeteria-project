@@ -4,6 +4,10 @@ namespace Core;
 
 class QueryBuilder
 {
+    
+protected $joins = [];
+protected $offsetVal;
+
     protected $db;
     protected $table;
 
@@ -60,24 +64,32 @@ class QueryBuilder
     }
 
     public function get()
-    {
-        $sql = "SELECT {$this->select} FROM {$this->table} ";
+{
+    $sql = "SELECT {$this->select} FROM {$this->table} ";
 
-        $sql .= $this->buildWhere() . " ";
-
-        if ($this->orderBy) {
-            $sql .= $this->orderBy . " ";
-        }
-
-        if ($this->limit) {
-            $sql .= $this->limit;
-        }
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($this->bindings);
-
-        return $stmt->fetchAll();
+    if (!empty($this->joins)) {
+        $sql .= implode(' ', $this->joins) . ' ';
     }
+
+    $sql .= $this->buildWhere() . " ";
+
+    if ($this->orderBy) {
+        $sql .= $this->orderBy . " ";
+    }
+
+    if ($this->limit) {
+        $sql .= $this->limit . " ";
+    }
+
+    if (isset($this->offsetVal)) {
+        $sql .= $this->offsetVal;
+    }
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($this->bindings);
+
+    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+}
 
     public function first()
     {
@@ -144,5 +156,19 @@ class QueryBuilder
         $stmt->execute($this->bindings);
 
         return $stmt->fetch()['count'];
+    }
+
+
+    public function join($table, $first, $operator, $second, $type = 'LEFT')
+    {
+        // Store join — rebuild in get()
+        $this->joins[] = "$type JOIN $table ON $first $operator $second";
+        return $this;
+    }
+
+    public function offset($offset)
+    {
+        $this->offsetVal = "OFFSET $offset";
+        return $this;
     }
 }
