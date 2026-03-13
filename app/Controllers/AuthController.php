@@ -7,6 +7,18 @@ use Core\Auth;
 
 class AuthController extends Controller
 {
+    private function appUrl(string $path): string
+    {
+        $base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '';
+        $normalizedPath = '/' . ltrim($path, '/');
+
+        if ($base === '') {
+            return $normalizedPath;
+        }
+
+        return $base . $normalizedPath;
+    }
+
     public function loginForm()
     {
         $this->view('auth/login');
@@ -20,9 +32,9 @@ class AuthController extends Controller
         if (Auth::attempt($email, $password)) {
 
             if (Auth::role() === 'admin') {
-                header("Location: /admin");
+                header('Location: ' . $this->appUrl('/admin'));
             } else {
-                header("Location: /home");
+                header('Location: ' . $this->appUrl('/home'));
             }
 
             exit;

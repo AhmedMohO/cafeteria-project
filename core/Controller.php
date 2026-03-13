@@ -8,6 +8,6 @@ class Controller
     {
         extract($data);
 
-        require "../views/$path.php";
+        require __DIR__ . "/../views/$path.php";
     }
 }
