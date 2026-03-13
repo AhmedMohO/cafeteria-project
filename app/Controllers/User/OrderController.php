@@ -18,18 +18,6 @@ class OrderController extends Controller
 		return (int) ($user['id'] ?? 1);
 	}
 
-	private function appUrl(string $path): string
-	{
-		$base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '';
-		$normalizedPath = '/' . ltrim($path, '/');
-
-		if ($base === '') {
-			return $normalizedPath;
-		}
-
-		return $base . $normalizedPath;
-	}
-
 	private function redirectQuery(
 		int $page,
 		string $dateFrom,
@@ -52,8 +40,9 @@ class OrderController extends Controller
 			$query['alert_message'] = $alertMessage;
 		}
 
-		return $this->appUrl('/user/my-orders') . '?' . http_build_query($query);
-	}
+		// return $this->appUrl('/user/my-orders') . '?' . http_build_query($query);
+		return '/user/my-orders?' . http_build_query($query);
+		}
 
 	public function latestOrder(): void
 	{

@@ -7,11 +7,14 @@ use App\Controllers\Admin\UserController;
 use App\Controllers\User\ProductController;
 use App\Controllers\User\OrderController;
 
+// Router::get('/', function () {
+//     $base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '';
+//     $target = Auth::check() ? '/home' : '/login';
+//     header('Location: ' . ($base === '' ? $target : $base . $target));
+//     exit;
+// });
 Router::get('/', function () {
-    $base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '';
-    $target = Auth::check() ? '/home' : '/login';
-    header('Location: ' . ($base === '' ? $target : $base . $target));
-    exit;
+    echo "Welcome to the Cafeteria Management System!";
 });
 
 Router::get('/login', [AuthController::class, 'loginForm']);
