@@ -5,6 +5,7 @@ use App\Controllers\AuthController;
 use App\Controllers\Admin\UserController;
 use App\Controllers\Admin\ProductController;
 use App\Controllers\Admin\CategoryController;
+use App\Controllers\Admin\OrderController;
 
 Router::get('/', function () {
     echo "Welcome to the Cafeteria Management System!";
@@ -37,3 +38,17 @@ Router::post('/admin/products/toggle/{id}', [ProductController::class, 'toggle']
 Router::get('/admin/categories', [CategoryController::class, 'index'], ['AuthMiddleware', 'AdminMiddleware']);
 Router::post('/admin/categories/store', [CategoryController::class, 'store'], ['AuthMiddleware', 'AdminMiddleware']);
 Router::post('/admin/categories/delete/{id}', [CategoryController::class, 'delete'], ['AuthMiddleware', 'AdminMiddleware']);
+
+//*- Dashboard Route
+Router::get('/admin/dashboard',      [OrderController::class, 'dashboard'],  ['AuthMiddleware', 'AdminMiddleware']);
+
+//*- Orders Routes
+Router::get('/admin/orders',         [OrderController::class, 'index'],       ['AuthMiddleware', 'AdminMiddleware']);
+Router::post('/admin/mark-delivered',[OrderController::class, 'deliver'],     ['AuthMiddleware', 'AdminMiddleware']);
+
+//*- Manual Order Routes
+Router::get('/admin/manual-order',   [OrderController::class, 'manualForm'],  ['AuthMiddleware', 'AdminMiddleware']);
+Router::post('/admin/place-order',   [OrderController::class, 'manualStore'], ['AuthMiddleware', 'AdminMiddleware']);
+
+//*- Checks Route
+Router::get('/admin/checks',         [OrderController::class, 'checks'],      ['AuthMiddleware', 'AdminMiddleware']);

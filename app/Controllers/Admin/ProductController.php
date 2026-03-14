@@ -35,29 +35,30 @@ class ProductController extends Controller
         $this->view('admin/products/create', compact('categories'));
     }
 
-    public function store()
-    {
-        $name        = trim($_POST['name']);
-        $price       = (float) $_POST['price'];
-        $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
+  public function store()
+{
+    $name        = trim($_POST['name']);
+    $price       = (float) $_POST['price'];
+    $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
 
-        $image = null;
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-            $image = $this->uploadImage($_FILES['image']);
-        }
-
-        $this->productModel->create([
-            'name'        => $name,
-            'price'       => $price,
-            'category_id' => $category_id,
-            'image'       => $image,
-            'available'   => 1,
-        ]);
-
-        header('Location: /admin/products');
-        exit;
+    $image = null;
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+        $image = $this->uploadImage($_FILES['image']);
     }
 
+    $this->productModel->create([
+        'name'        => $name,
+        'price'       => $price,
+        'category_id' => $category_id,
+        'image'       => $image,
+        'status'      => 'available',
+        'created_at'  => date('Y-m-d H:i:s'),
+        'updated_at'  => date('Y-m-d H:i:s'),
+    ]);
+
+    header('Location: ' . BASE_URL . '/admin/products');
+    exit;
+}
     public function edit($id)
     {
         $product    = $this->productModel->find($id);
@@ -73,28 +74,28 @@ class ProductController extends Controller
     }
 
     public function update($id)
-    {
-        $data = [
-            'name'        => trim($_POST['name']),
-            'price'       => (float) $_POST['price'],
-            'category_id' => !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null,
-        ];
+{
+    $data = [
+        'name'        => trim($_POST['name']),
+        'price'       => (float) $_POST['price'],
+        'category_id' => !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null,
+        'updated_at'  => date('Y-m-d H:i:s'),
+    ];
 
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-            $data['image'] = $this->uploadImage($_FILES['image']);
-        }
-
-        $this->productModel->updateWhere('id', $id, $data);
-
-        header('Location: /admin/products');
-        exit;
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+        $data['image'] = $this->uploadImage($_FILES['image']);
     }
 
+    $this->productModel->updateWhere('id', $id, $data);
+
+    header('Location: ' . BASE_URL . '/admin/products');
+    exit;
+}
     public function delete($id)
     {
         $this->productModel->deleteWhere('id', $id);
 
-        header('Location: /admin/products');
+        header('Location: ' . BASE_URL . '/admin/products');
         exit;
     }
 
@@ -102,7 +103,7 @@ class ProductController extends Controller
     {
         $this->productModel->toggleAvailable($id);
 
-        header('Location: /admin/products');
+        header('Location: ' . BASE_URL . '/admin/products');
         exit;
     }
 

@@ -75,7 +75,7 @@ class UserController extends Controller
             }
         }
 
-        header('Location: /admin/users');
+        header('Location: ' . base_url('/admin/users'));
         exit;
     }
 

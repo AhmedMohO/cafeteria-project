@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>All Products</h1>
-        <a href="/Cafeteria_Project/admin/products/create" class="btn btn-warning fw-bold">+ Add product</a>
+        <a href="<?= BASE_URL ?>/admin/products/create" class="btn btn-warning fw-bold">+ Add product</a>
     </div>
 
     <table class="table table-bordered align-middle">
@@ -30,7 +30,7 @@
                     <td><?= number_format($product['price'], 2) ?> EGP</td>
                     <td>
                         <?php if (!empty($product['image'])): ?>
-                            <img src="/uploads/<?= htmlspecialchars($product['image']) ?>"
+                            <img src="<?= BASE_URL ?>/uploads/<?= htmlspecialchars($product['image']) ?>"
                                  width="60" height="60"
                                  class="rounded object-fit-cover border">
                         <?php else: ?>
@@ -39,14 +39,14 @@
                     </td>
                     <td>
                         <div class="d-flex gap-1 flex-wrap">
-                            <form method="POST" action="/Cafeteria_Project/admin/products/toggle/<?= $product['id'] ?>">
-                                <button class="btn btn-sm <?= $product['available'] ? 'btn-success' : 'btn-secondary' ?>">
-                                    <?= $product['available'] ? 'available' : 'unavailable' ?>
+                            <form method="POST" action="<?= BASE_URL ?>/admin/products/toggle/<?= $product['id'] ?>">
+                                <button class="btn btn-sm <?= $product['status'] === 'available' ? 'btn-success' : 'btn-secondary' ?>">
+                                    <?= $product['status'] === 'available' ? 'available' : 'unavailable' ?>
                                 </button>
                             </form>
-                            <a href="/Cafeteria_Project/admin/products/edit/<?= $product['id'] ?>"
+                            <a href="<?= BASE_URL ?>/admin/products/edit/<?= $product['id'] ?>"
                                class="btn btn-sm btn-primary">edit</a>
-                            <form method="POST" action="/Cafeteria_Project/admin/products/delete/<?= $product['id'] ?>"
+                            <form method="POST" action="<?= BASE_URL ?>/admin/products/delete/<?= $product['id'] ?>"
                                   onsubmit="return confirm('Are you sure you want to delete this product?')">
                                 <button class="btn btn-sm btn-danger">delete</button>
                             </form>

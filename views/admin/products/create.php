@@ -4,10 +4,10 @@
 <div class="container mt-4" style="max-width:600px">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Add Product</h1>
-        <a href="/admin/products" class="btn btn-outline-secondary">← Back</a>
+        <a href="<?= BASE_URL ?>/admin/products" class="btn btn-outline-secondary">← Back</a>
     </div>
 
-    <form method="POST" action="/admin/products/store" enctype="multipart/form-data">
+    <form method="POST" action="<?= BASE_URL ?>/admin/products/store" enctype="multipart/form-data">
 
         <div class="mb-3">
             <label class="form-label fw-semibold">Product</label>
@@ -31,7 +31,7 @@
                         <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
                     <?php endforeach; ?>
                 </select>
-                <a href="/admin/categories" class="btn btn-outline-warning text-nowrap">+ Manage</a>
+                <a href="<?= BASE_URL ?>/admin/categories" class="btn btn-outline-warning text-nowrap">+ Manage</a>
             </div>
         </div>
 

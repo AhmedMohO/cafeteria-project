@@ -28,10 +28,10 @@ class Product extends Model
 
     //*- Toggle Available us update
     public function toggleAvailable($id)
-    {
+{
     $product = $this->find($id);
-    $newValue = $product['available'] ? 0 : 1;
+    $newStatus = $product['status'] === 'available' ? 'unavailable' : 'available';
     
-    return $this->updateWhere('id', $id, ['available' => $newValue]);
-    }
+    return $this->updateWhere('id', $id, ['status' => $newStatus]);
+}
 }

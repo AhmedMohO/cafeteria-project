@@ -4,10 +4,10 @@
 <div class="container mt-4" style="max-width:600px">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Edit Product</h1>
-        <a href="/Cafeteria_Project/admin/products" class="btn btn-outline-secondary">← Back</a>
+        <a href="<?= BASE_URL ?>/admin/products" class="btn btn-outline-secondary">← Back</a>
     </div>
 
-    <form method="POST" action="/Cafeteria_Project/admin/products/update/<?= $product['id'] ?>" enctype="multipart/form-data">
+    <form method="POST" action="<?= BASE_URL ?>/admin/products/update/<?= $product['id'] ?>" enctype="multipart/form-data">
 
         <div class="mb-3">
             <label class="form-label fw-semibold">Product</label>
@@ -53,7 +53,7 @@
 
         <div class="d-flex gap-2">
             <button type="submit" class="btn btn-warning fw-bold px-4">Save</button>
-            <a href="/Cafeteria_Project/admin/products" class="btn btn-outline-secondary px-4">Cancel</a>
+            <a href="<?= BASE_URL ?>/admin/products" class="btn btn-outline-secondary px-4">Cancel</a>
         </div>
 
     </form>
