@@ -5,7 +5,7 @@ namespace App\Controllers\Admin;
 use Core\Controller;
 use App\Models\Product;
 use App\Models\Category;
-
+use App\Models\OrderItem;
 class ProductController extends Controller
 {
     private $productModel;
@@ -91,13 +91,28 @@ class ProductController extends Controller
     header('Location: ' . BASE_URL . '/admin/products');
     exit;
 }
-    public function delete($id)
-    {
-        $this->productModel->deleteWhere('id', $id);
+    // public function delete($id)
+    // {
+    //     $this->productModel->deleteWhere('id', $id);
 
-        header('Location: ' . BASE_URL . '/admin/products');
-        exit;
-    }
+    //     header('Location: ' . BASE_URL . '/admin/products');
+    //     exit;
+    // }
+
+    // Delete product and all associated order items
+    // This preserves order history while removing the product
+    // fixing foreign key constraint error
+
+public function delete($id)
+{
+    $orderItem = new OrderItem();
+    $orderItem->where('product_id', $id)->delete();
+
+    $this->productModel->deleteWhere('id', $id);
+
+    header('Location: ' . BASE_URL . '/admin/products');
+    exit;
+}
 
     public function toggle($id)
     {
