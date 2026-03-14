@@ -6,7 +6,7 @@
 
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold mb-0"><i class="bi bi-people me-2 text-warning"></i>All Users</h4>
-    <a href="<?= BASE_URL ?>/admin/users/create" class="btn btn-warning fw-semibold"><i class="bi bi-person-plus me-1"></i>Add User</a>
+    <a href="/admin/users/create" class="btn btn-warning fw-semibold"><i class="bi bi-person-plus me-1"></i>Add User</a>
   </div>
 
   <?php if (!empty($error)): ?>
@@ -16,12 +16,12 @@
   </div>
   <?php endif; ?>
 
-  <form method="GET" action="<?= BASE_URL ?>/admin/users" class="mb-3">
+  <form method="GET" action="/admin/users" class="mb-3">
     <div class="input-group" style="max-width:400px;">
       <input type="text" name="search" class="form-control" placeholder="Search by name or email…" value="<?= htmlspecialchars($search) ?>">
       <button class="btn btn-warning" type="submit"><i class="bi bi-search"></i></button>
       <?php if ($search !== ''): ?>
-      <a href="<?= BASE_URL ?>/admin/users" class="btn btn-outline-secondary">Clear</a>
+      <a href="/admin/users" class="btn btn-outline-secondary">Clear</a>
       <?php endif; ?>
     </div>
   </form>
@@ -47,7 +47,7 @@
           <?php foreach ($users as $u): ?>
           <?php
             if (!empty($u['pic'])) {
-                $avatar = '/cafeteria-project/public/' . ltrim($u['pic'], '/');
+                $avatar = '/' . ltrim($u['pic'], '/');
             } else {
                 $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($u['name']) . '&background=f59e0b&color=fff&size=64&bold=true';
             }
@@ -71,7 +71,7 @@
             <td><?= htmlspecialchars($u['ext'] ?? '—') ?></td>
             <td>
               <div class="d-flex gap-1">
-                <a href="<?= BASE_URL ?>/admin/users/edit?id=<?= $u['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                <a href="/admin/users/edit?id=<?= $u['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
             <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $u['id'] ?>">
               <i class="bi bi-trash"></i>
             </button>
@@ -92,7 +92,7 @@
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     
-                    <form method="POST" action="<?= BASE_URL ?>/admin/users/delete" class="d-inline">
+                    <form method="POST" action="/admin/users/delete" class="d-inline">
                       <input type="hidden" name="id" value="<?= $u['id'] ?>">
                       <button type="submit" class="btn btn-danger">Delete</button>
                     </form>

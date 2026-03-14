@@ -1,4 +1,8 @@
-<?php $current = basename($_SERVER['PHP_SELF']); ?>
+<?php
+
+use Core\Auth;
+
+ $current = basename($_SERVER['PHP_SELF']); ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
   <div class="container">
     <a class="navbar-brand fw-bold text-warning fs-5" href="index.php">
@@ -15,14 +19,17 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current==='my_orders.php'?'active fw-semibold':'' ?>" href="my_orders.php">
+          <a class="nav-link <?= $current==='my_orders.php'?'active fw-semibold':'' ?>" href="/user/my_orders">
             <i class="bi bi-receipt me-1"></i>My Orders
           </a>
         </li>
       </ul>
       <div class="d-flex align-items-center gap-2">
-        <span class="rounded-circle text-white">IA</span>
-        <span class="fw-semibold text-dark">Islam Askar</span>
+        <?php 
+          $user = Auth::user();
+        ?>
+        <img class="rounded-circle" src="https://ui-avatars.com/api/?name=<?= urlencode($user['name']) ?>&background=f59e0b&color=fff&size=32&bold=true" alt="">
+        <span class="fw-semibold text-dark"><?= htmlspecialchars($user['name'] ?? 'User') ?></span>
       </div>
     </div>
   </div>

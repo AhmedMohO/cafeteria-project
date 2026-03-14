@@ -40,8 +40,7 @@ class User extends Model
         $sql = "SELECT u.*, r.name AS room_name, r.no AS room_no
                 FROM users u
                 LEFT JOIN rooms r ON u.room_id = r.id
-                WHERE u.role = 'user'
-                  AND u.is_active = 1";
+                WHERE u.is_active = 1";
 
         $bindings = [];
 
