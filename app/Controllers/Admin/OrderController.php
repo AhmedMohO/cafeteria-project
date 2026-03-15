@@ -231,7 +231,7 @@ class OrderController extends Controller
 
         if (empty($products)) {
             $_SESSION['error'] = 'No valid products selected.';
-            header('Location: ' . BASE_URL . '/admin/manual_order');
+            header('Location: ' . BASE_URL . '/admin/manual-order');
             exit;
         }
 
