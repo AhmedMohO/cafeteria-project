@@ -12,9 +12,15 @@ require_once __DIR__ . '/../routes/web.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-$base = '/Cafeteria_Project';
+$base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 
-$uri = str_replace($base, '', $uri);
+if ($base !== '' && strpos($uri, $base) === 0) {
+	$uri = substr($uri, strlen($base));
+}
+
+if ($uri === '' || $uri === false) {
+	$uri = '/';
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
 

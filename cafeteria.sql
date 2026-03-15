@@ -69,3 +69,9 @@ CREATE TABLE order_items (
     FOREIGN KEY (order_id) REFERENCES orders(id),
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
+
+ALTER TABLE users ADD COLUMN is_active TINYINT(1) NOT NULL DEFAULT 1;
+
+INSERT INTO users (name, email, password, role, pic, room_id, ext, created_at) VALUES
+('admin','admin@cafeteria.com','$2y$12$qg3A5MtNm3ZBUmzX7lkZzOtsxNpP0O8.D.Erq830fiOYcU6e0hhF.','admin','admin.jpg',5,'245',NOW());
+pass : 123456
