@@ -13,14 +13,14 @@ use App\Controllers\User\OrderController as UserOrderController;
 //     'AuthMiddleware',
 // ]);
 
-Router::get('/login', [AuthController::class, 'loginForm']);
-Router::post('/login', [AuthController::class, 'login']);
+Router::get('/login', [AuthController::class, 'loginForm'], ['GuestMiddleware']);
+Router::post('/login', [AuthController::class, 'login'], ['GuestMiddleware']);
 Router::get('/logout', [AuthController::class, 'logout']);
 
 
 ///
 
-Router::get('/home', [UserProductController::class, 'index'], [
+Router::get('/user/home', [UserProductController::class, 'index'], [
     'AuthMiddleware'
 ]);
 
@@ -90,6 +90,10 @@ Router::get('/admin/users/edit', [UserController::class, 'edit'], [
     'AdminMiddleware'
 ]);
 Router::post('/admin/users/update', [UserController::class, 'update'], [
+    'AuthMiddleware',
+    'AdminMiddleware'
+]);
+Router::post('/admin/users/activate', [UserController::class, 'activate'], [
     'AuthMiddleware',
     'AdminMiddleware'
 ]);

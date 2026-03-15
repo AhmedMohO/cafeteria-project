@@ -17,12 +17,23 @@
   <?php endif; ?>
 
   <form method="GET" action="<?= BASE_URL ?>/admin/users" class="mb-3">
-    <div class="input-group" style="max-width:400px;">
-      <input type="text" name="search" class="form-control" placeholder="Search by name or email…" value="<?= htmlspecialchars($search) ?>">
-      <button class="btn btn-warning" type="submit"><i class="bi bi-search"></i></button>
-      <?php if ($search !== ''): ?>
-      <a href="<?= BASE_URL ?>/admin/users" class="btn btn-outline-secondary">Clear</a>
-      <?php endif; ?>
+    <div class="row g-2 align-items-center justify-content-between mb-3">
+      <div class="col-auto">
+        <div class="input-group" style="max-width:400px;">
+          <input type="text" name="search" class="form-control" placeholder="Search by name or email…" value="<?= htmlspecialchars($search) ?>">
+          <button class="btn btn-warning" type="submit"><i class="bi bi-search"></i></button>
+          <?php if ($search !== ''): ?>
+          <a href="<?= BASE_URL ?>/admin/users" class="btn btn-outline-secondary">Clear</a>
+          <?php endif; ?>
+        </div>
+      </div>
+      <div class="col-auto">
+        <select name="status" class="form-select" onchange="this.form.submit()">
+          <option value="all" <?= $status === 'all' ? 'selected' : '' ?>>All Status</option>
+          <option value="active" <?= $status === 'active' ? 'selected' : '' ?>>Active</option>
+          <option value="inactive" <?= $status === 'inactive' ? 'selected' : '' ?>>Inactive</option>
+        </select>
+      </div>
     </div>
   </form>
 
@@ -64,6 +75,9 @@
                      onerror="this.src='https://ui-avatars.com/api/?name=<?= urlencode($u['name']) ?>&background=f59e0b&color=fff&size=64&bold=true';"
                      >
                 <span class="fw-semibold"><?= htmlspecialchars($u['name']) ?></span>
+                <?php if (!$u['is_active']): ?>
+                  <span class="badge bg-danger ms-1" style="font-size: 0.7rem;">Inactive</span>
+                <?php endif; ?>
               </div>
             </td>
             <td class="text-muted small"><?= htmlspecialchars($u['email']) ?></td>
@@ -72,9 +86,17 @@
             <td>
               <div class="d-flex gap-1">
                 <a href="<?= BASE_URL ?>/admin/users/edit?id=<?= $u['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $u['id'] ?>">
-              <i class="bi bi-trash"></i>
-            </button>
+                
+                <?php if ($u['is_active']): ?>
+                  <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $u['id'] ?>">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                <?php else: ?>
+                  <form method="POST" action="<?= BASE_URL ?>/admin/users/activate" class="d-inline">
+                    <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                    <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-person-check-fill"></i></button>
+                  </form>
+                <?php endif; ?>
 
             <div class="modal fade" id="deleteModal<?= $u['id'] ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?= $u['id'] ?>" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered">
@@ -113,17 +135,17 @@
       <nav><ul class="pagination pagination-sm mb-0">
 
         <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-          <a class="page-link" href="?page=<?= $page - 1 ?><?= $search !== '' ? '&search=' . urlencode($search) : '' ?>">&laquo;</a>
+          <a class="page-link" href="?page=<?= $page - 1 ?><?= $search !== '' ? '&search=' . urlencode($search) : '' ?><?= $status !== 'all' ? '&status=' . urlencode($status) : '' ?>">&laquo;</a>
         </li>
 
         <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
         <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-          <a class="page-link" href="?page=<?= $i ?><?= $search !== '' ? '&search=' . urlencode($search) : '' ?>"><?= $i ?></a>
+          <a class="page-link" href="?page=<?= $i ?><?= $search !== '' ? '&search=' . urlencode($search) : '' ?><?= $status !== 'all' ? '&status=' . urlencode($status) : '' ?>"><?= $i ?></a>
         </li>
         <?php endfor; ?>
 
         <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
-          <a class="page-link" href="?page=<?= $page + 1 ?><?= $search !== '' ? '&search=' . urlencode($search) : '' ?>">&raquo;</a>
+          <a class="page-link" href="?page=<?= $page + 1 ?><?= $search !== '' ? '&search=' . urlencode($search) : '' ?><?= $status !== 'all' ? '&status=' . urlencode($status) : '' ?>">&raquo;</a>
         </li>
 
       </ul></nav>

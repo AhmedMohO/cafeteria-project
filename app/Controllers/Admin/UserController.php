@@ -21,12 +21,13 @@ class UserController extends Controller
 
         $users = new User();
         $search = trim($_GET['search'] ?? '');
+        $status = $_GET['status'] ?? 'all';
         $page = max(1, (int)($_GET['page'] ?? 1));
-        $total = $users->countUsers($search);
+        $total = $users->countUsers($search, $status);
         $totalPages = (int)ceil($total / 10);
-        $users = $users->getUsers($search, $page, 10);
+        $users = $users->getUsers($search, $status, $page, 10);
 
-        $this->view('admin/users', compact('users', 'search', 'page', 'totalPages', 'total', 'error'));
+        $this->view('admin/users', compact('users', 'search', 'status', 'page', 'totalPages', 'total', 'error'));
     }
 
     public function create()
@@ -190,6 +191,25 @@ class UserController extends Controller
             }
             $this->userOP->hardDelete($id);
         }
+
+        header('Location: ' . BASE_URL . '/admin/users');
+        exit;
+    }
+
+    public function activate()
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        $id = (int)($_POST['id'] ?? 0);
+        $user = $this->userOP->find($id);
+
+        if (!$user) {
+            $_SESSION['error'] = 'User not found.';
+            header('Location: ' . BASE_URL . '/admin/users');
+            exit;
+        }
+
+        $this->userOP->activate($id);
 
         header('Location: ' . BASE_URL . '/admin/users');
         exit;

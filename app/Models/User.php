@@ -31,7 +31,7 @@ class User extends Model
         return (int) $q->count() > 0;
     }
 
-    public function getUsers(string $search = '', int $page = 1, int $perPage = 10): array
+    public function getUsers(string $search = '', string $status = 'all', int $page = 1, int $perPage = 10): array
     {
         $offset = ($page - 1) * $perPage;
         $perPage = (int) $perPage;
@@ -39,8 +39,13 @@ class User extends Model
 
         $sql = "SELECT u.*, r.name AS room_name, r.no AS room_no
                 FROM users u
-                LEFT JOIN rooms r ON u.room_id = r.id
-                WHERE u.is_active = 1";
+                LEFT JOIN rooms r ON u.room_id = r.id";
+
+        if ($status === 'active') {
+            $sql .= " AND u.is_active = 1";
+        } elseif ($status === 'inactive') {
+            $sql .= " AND u.is_active = 0";
+        }
 
         $bindings = [];
 
@@ -58,23 +63,31 @@ class User extends Model
         return $stmt->fetchAll();
     }
 
-    public function countUsers(string $search = ''): int
+    public function countUsers(string $search = '', string $status = 'all'): int
     {
         if ($search === '') {
-            return (int) $this->query()
-                ->where('role', 'user')
-                ->where('is_active', 1)
-                ->count();
+            $q = $this->query()->where('role', 'user');
+            if ($status === 'active') {
+                $q->where('is_active', 1);
+            } elseif ($status === 'inactive') {
+                $q->where('is_active', 0);
+            }
+            return (int) $q->count();
         }
 
         $like = "%{$search}%";
-        $stmt = $this->db->prepare(
-            "SELECT COUNT(*) as cnt
-             FROM users
-             WHERE role = 'user'
-               AND is_active = 1
-               AND (name LIKE ? OR email LIKE ?)"
-        );
+        $sql = "SELECT COUNT(*) as cnt
+              FROM users
+              WHERE role = 'user'
+                AND (name LIKE ? OR email LIKE ?)";
+
+        if ($status === 'active') {
+            $sql .= " AND is_active = 1";
+        } elseif ($status === 'inactive') {
+            $sql .= " AND is_active = 0";
+        }
+
+        $stmt = $this->db->prepare($sql);
         $stmt->execute([$like, $like]);
         return (int) $stmt->fetch()['cnt'];
     }
@@ -86,5 +99,10 @@ class User extends Model
         );
         $stmt->execute([$userId]);
         return (int) $stmt->fetch()['cnt'] > 0;
+    }
+
+    public function activate(int $userId): void
+    {
+        $this->updateWhere('id', $userId, ['is_active' => 1]);
     }
 }

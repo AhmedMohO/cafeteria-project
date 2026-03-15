@@ -53,12 +53,6 @@
 
       </form>
 
-      <div class="text-center">
-        <a href="#" class="text-decoration-none small text-warning fw-semibold">
-          <i class="bi bi-question-circle me-1"></i>Forgot Password?
-        </a>
-      </div>
-
     </div>
   </div>
 </div>
