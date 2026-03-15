@@ -16,7 +16,7 @@
   <!-- Form Card -->
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-4">
-      <form method="POST" action="<?= BASE_PATH ?>/admin/products/update/<?= $product['id'] ?>" enctype="multipart/form-data">
+      <form method="POST" action="<?= BASE_URL ?>/admin/products/update/<?= $product['id'] ?>" enctype="multipart/form-data">
 
         <!-- Product Name -->
         <div class="mb-3">
@@ -55,7 +55,7 @@
         <div class="mb-3">
           <label class="form-label fw-semibold">Product picture</label>
           <div class="d-flex align-items-center gap-3">
-            <img src="<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($product['image']) ?>"
+            <img src="<?= BASE_URL ?>/uploads/<?= htmlspecialchars($product['image']) ?>"
                  width="100" height="100"
                  class="rounded-3 object-fit-cover border"> <!-- ✅ fixed -->
             <span class="text-muted small">Current image</span>

@@ -20,14 +20,14 @@ class CategoryController extends Controller
         if ($name) {
             $this->categoryModel->create(['name' => $name]);
         }
-        header('Location: /admin/categories');
+        header('Location:' . BASE_URL . '/admin/categories');
         exit;
     }
     
     public function delete($id)
     {
         $this->categoryModel->deleteWhere('id', $id);
-        header('Location: /admin/categories');
+        header('Location: ' . BASE_URL . '/admin/categories');
         exit;
     }
 

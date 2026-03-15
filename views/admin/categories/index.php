@@ -15,7 +15,7 @@
   <div class="card border-0 shadow-sm rounded-4 mb-4">
     <div class="card-body p-4">
       <h5 class="fw-bold mb-3">Add New Category</h5>
-      <form method="POST" action="<?= BASE_PATH ?>/admin/categories/store">
+      <form method="POST" action="<?= BASE_URL ?>/admin/categories/store">
         <div class="input-group">
           <input type="text" name="name" class="form-control rounded-start-3"
                  placeholder="Category name" required>
