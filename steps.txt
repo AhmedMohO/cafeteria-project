@@ -1,0 +1,6 @@
+1- clone the project
+2- install dependencies using composer
+3- import database from cafeteria.sql file
+4- import sample data from sample_data.sql file
+5- configure .env file with your database credentials from .env.example
+6- run project using apache server or php built-in server (Don't Forget to run mysql server)

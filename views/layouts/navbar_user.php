@@ -1,25 +1,33 @@
 <?php
-$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+
+use Core\Auth;
+
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '/';
 $base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '';
 
-if ($base !== '' && str_starts_with($requestPath, $base)) {
-  $requestPath = substr($requestPath, strlen($base));
+if ($base !== '' && strpos($requestPath, $base) === 0) {
+    $requestPath = substr($requestPath, strlen($base));
 }
 
-$app = static function (string $path) use ($base): string {
-  $normalized = '/' . ltrim($path, '/');
-  if ($base === '') {
-    return $normalized;
-  }
-  return $base . $normalized;
-};
+if (!isset($app) || !is_callable($app)) {
+    $app = static function (string $path) use ($base): string {
+        $normalized = '/' . ltrim($path, '/');
+        if ($base === '') {
+            return $normalized;
+        }
+
+        return $base . $normalized;
+    };
+}
 
 $activeHome = ($requestPath === '/home' || $requestPath === '/');
-$activeOrders = ($requestPath === '/user/my-orders' || $requestPath === '/user/orders');
+$activeOrders = (strpos($requestPath, '/user/my-orders') === 0 || strpos($requestPath, '/user/orders') === 0);
 
-$userName = trim((string)($currentUser['name'] ?? 'User'));
-$userInitials = strtoupper(substr($userName, 0, 1));
+$currentUser = $currentUser ?? Auth::user() ?? [];
+$userName = trim((string) ($currentUser['name'] ?? 'User'));
+$userInitial = strtoupper(substr($userName, 0, 1));
 ?>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
   <div class="container">
     <a class="navbar-brand fw-bold text-warning fs-5" href="<?= htmlspecialchars($app('/home')) ?>">
@@ -42,8 +50,11 @@ $userInitials = strtoupper(substr($userName, 0, 1));
         </li>
       </ul>
       <div class="d-flex align-items-center gap-2">
-        <span class="rounded-circle bg-warning text-white d-inline-flex align-items-center justify-content-center" style="width:32px;height:32px;"><?= htmlspecialchars($userInitials) ?></span>
+        <span class="rounded-circle bg-warning text-white d-inline-flex align-items-center justify-content-center" style="width:32px;height:32px;">
+          <?= htmlspecialchars($userInitial) ?>
+        </span>
         <span class="fw-semibold text-dark"><?= htmlspecialchars($userName) ?></span>
+        <a href="<?= htmlspecialchars($app('/logout')) ?>" class="btn btn-sm btn-outline-secondary ms-2">Logout</a>
       </div>
     </div>
   </div>

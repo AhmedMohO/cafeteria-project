@@ -12,7 +12,7 @@ class Database
     private function __construct()
     {
         $env = parse_ini_file(__DIR__ . '/../.env');
-
+        
         $host = $env['DB_HOST'] ?? 'localhost';
         $db   = $env['DB_NAME'] ?? 'cafeteria';
         $user = $env['DB_USER'] ?? 'root';

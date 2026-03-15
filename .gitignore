@@ -2,3 +2,9 @@
 .env
 /.idea
 /.vscode
+composer.lock
+cafeteria.sql
+.gitignore
+.env.example
+composer.json
+composer.lock

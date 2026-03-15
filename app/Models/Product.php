@@ -6,7 +6,7 @@ use Core\Model;
 
 class Product extends Model
 {
-    protected $table = "products";
+    protected $table = 'products';
 
     private const INVALID_IMAGE_VALUES = ['', '?', '??', '???', '�'];
     private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
@@ -63,5 +63,34 @@ class Product extends Model
         $extension = strtolower((string) pathinfo($image, PATHINFO_EXTENSION));
 
         return in_array($extension, self::ALLOWED_EXTENSIONS, true);
+    }
+
+    public function allWithCategory($page = 1, $perPage = 10)
+    {
+        $offset = ($page - 1) * $perPage;
+
+        return $this->query()
+            ->select(['products.*', 'categories.name as category_name'])
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->limit($perPage)
+            ->offset($offset)
+            ->get();
+    }
+
+    public function countAll()
+    {
+        return (int) $this->query()->count();
+    }
+
+    public function toggleAvailable($id)
+    {
+        $product = $this->find($id);
+        if (!$product) {
+            return false;
+        }
+
+        $newStatus = ($product['status'] === 'available') ? 'unavailable' : 'available';
+
+        return $this->updateWhere('id', $id, ['status' => $newStatus]);
     }
 }

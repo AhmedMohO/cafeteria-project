@@ -1,4 +1,8 @@
-<?php $pageTitle = "Cafeteria – Login"; ?>
+<?php
+$pageTitle = "Cafeteria – Login";
+$appBase = defined('APP_BASE_PATH') ? APP_BASE_PATH : '';
+$loginAction = ($appBase === '') ? '/login' : $appBase . '/login';
+?>
 <?php include __DIR__ . '/../layouts/head.php'; ?>
 
 <div class="min-vh-100 d-flex align-items-center justify-content-center bg-warning bg-opacity-10">
@@ -11,7 +15,7 @@
         <p class="text-muted small">Sign in to your account</p>
       </div>
 
-      <form method="POST" action="/login">
+      <form method="POST" action="<?= htmlspecialchars($loginAction) ?>">
 
         <div class="mb-3">
           <label class="form-label fw-semibold">Email address</label>

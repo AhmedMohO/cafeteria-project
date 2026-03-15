@@ -47,7 +47,7 @@
           <?php foreach ($users as $u): ?>
           <?php
             if (!empty($u['pic'])) {
-                $avatar = '/cafeteria-project/public/' . ltrim($u['pic'], '/');
+                $avatar = '/' . ltrim($u['pic'], '/');
             } else {
                 $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($u['name']) . '&background=f59e0b&color=fff&size=64&bold=true';
             }

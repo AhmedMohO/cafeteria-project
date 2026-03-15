@@ -20,13 +20,9 @@ class AuthController extends Controller
         if (Auth::attempt($email, $password)) {
 
             if (Auth::role() === 'admin') {
-                // header('Location: ' . $this->appUrl('/admin'));
-                header('Location: /admin');
-                exit;
+                header('Location: ' . $this->appUrl('/admin/dashboard'));
             } else {
-                // header('Location: ' . $this->appUrl('/home'));
-                header('Location: /home');
-                exit;
+                header('Location: ' . $this->appUrl('/home'));
             }
 
             exit;
@@ -34,6 +30,23 @@ class AuthController extends Controller
 
         echo "Invalid credentials";
     }
+
+
+    //for test
+//     public function login()
+// {
+//     $email    = $_POST['email'];
+//     $password = $_POST['password'];
+
+//     $pdo  = \Core\Database::getInstance()->getConnection();
+//     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+//     $stmt->execute([$email]);
+//     $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+//     var_dump($user);
+//     var_dump(password_verify($password, $user['password'] ?? ''));
+//     die();
+// }
 
     public function logout()
     {
