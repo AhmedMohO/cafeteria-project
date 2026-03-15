@@ -12,6 +12,20 @@ class OrderController extends Controller
 {
 	private const PER_PAGE = 5;
 
+	private function resolveOrderItemImage(array $productsById, int $productId, string $storedImage): string
+	{
+		$image = Product::resolveStoredImage($storedImage);
+		if ($image !== '') {
+			return $image;
+		}
+
+		if ($productId > 0 && isset($productsById[$productId])) {
+			return Product::resolveStoredImage((string) ($productsById[$productId]['image'] ?? ''));
+		}
+
+		return '';
+	}
+
 	private function currentUserId(): int
 	{
 		$user = Auth::user();
@@ -58,8 +72,9 @@ class OrderController extends Controller
 				return;
 			}
 
+			$productsById = $productModel->getAvailableIndexedById();
 			$productsByName = [];
-			foreach ($productModel->searchAvailable('') as $product) {
+			foreach ($productsById as $product) {
 				$nameKey = strtolower(trim((string) ($product['name'] ?? '')));
 				if ($nameKey !== '') {
 					$productsByName[$nameKey] = (int) ($product['id'] ?? 0);
@@ -79,7 +94,7 @@ class OrderController extends Controller
 				$items[] = [
 					'id' => $productId,
 					'name' => $name,
-					'image' => Product::resolveIcon($name, (string) ($row['image'] ?? '')),
+					'image' => $this->resolveOrderItemImage($productsById, $productId, (string) ($row['image'] ?? '')),
 					'price' => (float) ($row['price'] ?? 0),
 					'quantity' => (int) ($row['quantity'] ?? 0),
 				];
@@ -197,7 +212,7 @@ class OrderController extends Controller
 
 				$product = $productsById[$productId];
 				$price = (float) ($product['price'] ?? 0);
-				$productImage = trim((string) ($product['image'] ?? ''));
+				$productImage = Product::resolveStoredImage((string) ($product['image'] ?? ''));
 				if ($price <= 0) {
 					http_response_code(400);
 					echo json_encode(['success' => false, 'message' => 'Invalid product price']);
@@ -209,7 +224,7 @@ class OrderController extends Controller
 				$normalizedItems[] = [
 					'product_id' => $productId,
 					'name' => $productName,
-					'image' => $productImage !== '' ? $productImage : $productName,
+					'image' => $productImage,
 					'price' => $price,
 					'quantity' => $quantity,
 				];
@@ -273,6 +288,8 @@ class OrderController extends Controller
 		}
 
 		$orderModel = new Order();
+		$productModel = new Product();
+		$productsById = $productModel->getAvailableIndexedById();
 		$totalOrders = $orderModel->countByUserAndDateRange($this->currentUserId(), $dateFrom, $dateTo);
 		$totalPages = (int) ceil($totalOrders / $perPage);
 
@@ -295,9 +312,9 @@ class OrderController extends Controller
 		$totalSpent = 0.0;
 		foreach ($orders as &$order) {
 			$orderId = (int) ($order['id'] ?? 0);
-			$order['items'] = array_map(static function (array $item): array {
-				$name = (string) ($item['name'] ?? '');
-				$item['image'] = Product::resolveIcon($name, (string) ($item['image'] ?? ''));
+			$order['items'] = array_map(function (array $item) use ($productsById): array {
+				$productId = (int) ($item['product_id'] ?? 0);
+				$item['image'] = $this->resolveOrderItemImage($productsById, $productId, (string) ($item['image'] ?? ''));
 				return $item;
 			}, $itemsByOrderId[$orderId] ?? []);
 			$order['room'] = trim(((string) ($order['room_no'] ?? '')) . (isset($order['room_name']) && $order['room_name'] !== '' ? ' - ' . (string) $order['room_name'] : ''));

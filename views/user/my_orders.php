@@ -20,6 +20,15 @@ $buildPageLink = static function (int $targetPage) use ($dateFrom, $dateTo, $app
 	}
 	return $app('/user/my-orders') . '?' . http_build_query($query);
 };
+
+$productImageUrl = static function (string $image) use ($app): string {
+	$image = trim($image);
+	if ($image === '') {
+		return '';
+	}
+
+	return $app('/uploads/' . rawurlencode($image));
+};
 ?>
 
 <?php include __DIR__ . '/../layouts/head.php'; ?>
@@ -123,13 +132,18 @@ $buildPageLink = static function (int $targetPage) use ($dateFrom, $dateTo, $app
 												<?php else: ?>
 													<?php foreach (($o['items'] ?? []) as $item): ?>
 														<?php
-													$icon = trim((string) ($item['image'] ?? '☕'));
+													$image = trim((string) ($item['image'] ?? ''));
+													$imageUrl = $productImageUrl($image);
 													$name = (string) ($item['name'] ?? 'Product');
 													$unitPrice = (float) ($item['price'] ?? 0);
 													$qty = (int) ($item['quantity'] ?? 0);
 													?>
 													<div class="text-center">
-														<div class="fs-1"><?= htmlspecialchars($icon) ?></div>
+														<?php if ($imageUrl !== ''): ?>
+															<img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($name) ?>" class="order-item-thumb">
+														<?php else: ?>
+															<div class="order-item-thumb product-image-fallback d-inline-flex align-items-center justify-content-center">No image</div>
+														<?php endif; ?>
 															<div class="small"><?= htmlspecialchars($name) ?></div>
 															<span class="badge bg-warning text-dark"><?= number_format($unitPrice, 2) ?> EGP</span>
 															<div class="small text-muted">x<?= $qty ?></div>

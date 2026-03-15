@@ -6,7 +6,6 @@ const orderRoomSelect = document.querySelector('#order-room');
 const orderNotesTextarea = document.querySelector('#order-notes');
 const orderMessageBox = document.querySelector('#order-message');
 const latestOrderContainer = document.querySelector('#latest-order-container');
-console.log('Main JS loaded');
 const endpointConfig = (typeof window !== 'undefined' && window.CAFETERIA_ENDPOINTS)
   ? window.CAFETERIA_ENDPOINTS
   : {};
@@ -15,6 +14,7 @@ const endpoints = {
   searchProducts: endpointConfig.searchProducts || '/user/search-products',
   latestOrder: endpointConfig.latestOrder || '/user/latest-order',
   placeOrder: endpointConfig.placeOrder || '/user/place-order',
+  uploadsBase: endpointConfig.uploadsBase || '/uploads',
 };
 
 let cart = [];
@@ -35,6 +35,24 @@ function formatPrice(value) {
   const numericValue = Number(value);
   if (!Number.isFinite(numericValue)) return '0.00';
   return numericValue.toFixed(2);
+}
+
+function buildUploadUrl(imageName) {
+  const cleanImageName = String(imageName || '').trim();
+  if (!cleanImageName) return '';
+
+  const cleanBase = String(endpoints.uploadsBase || '/uploads').replace(/\/+$/, '');
+  return `${cleanBase}/${encodeURIComponent(cleanImageName)}`;
+}
+
+function renderProductImage(imageName, altText, className = 'product-thumb', fallbackText = 'No image') {
+  const imageUrl = buildUploadUrl(imageName);
+
+  if (!imageUrl) {
+    return `<div class="${className} product-image-fallback">${escapeHtml(fallbackText)}</div>`;
+  }
+
+  return `<img src="${imageUrl}" alt="${escapeHtml(altText || 'Product image')}" class="${className}" loading="lazy">`;
 }
 
 function parseQuantity(value) {
@@ -98,7 +116,10 @@ function renderCart() {
   cartItemsContainer.innerHTML = cart.map((item, index) => `
     <div class="mb-2" data-index="${index}">
       <div class="d-flex align-items-center justify-content-between p-2 bg-light rounded-3">
-        <span class="fw-semibold">${escapeHtml(item.image || item.icon || '☕')} ${escapeHtml(item.name)}</span>
+        <div class="d-flex align-items-center gap-2">
+          ${renderProductImage(item.image, item.name, 'cart-item-thumb')}
+          <span class="fw-semibold">${escapeHtml(item.name)}</span>
+        </div>
         <div class="d-flex align-items-center gap-2">
           <input
             type="number"
@@ -135,16 +156,16 @@ function renderProductsList(productList) {
 
   productsContainer.innerHTML = productList.map((product) => {
     const id = Number.parseInt(product.id, 10) || 0;
-    const image = product.image || product.icon || '☕';
+    const image = product.image || '';
     const name = product.name || '';
     const price = formatPrice(product.price);
-    const imageHtml = `<div class="product-icon" style="font-size: 2.5rem;">${escapeHtml(image)}</div>`;
+    const imageHtml = renderProductImage(image, name, 'product-thumb');
 
     return `
       <div class="col-6 col-md-4 col-xl-3">
         <div class="card border-0 shadow-sm text-center product-card h-100" style="border-radius:14px;">
           <div class="card-body p-3">
-            <div class="product-icon mb-1" data-image="${escapeHtml(image)}">${imageHtml}</div>
+            <div class="product-icon mb-2" data-image="${escapeHtml(image)}">${imageHtml}</div>
             <div class="fw-semibold" data-id="${id}" data-name="${escapeHtml(name)}">${escapeHtml(name)}</div>
             <span class="badge-price"><span data-price="${price}">${price}</span> EGP</span>
           </div>
@@ -247,7 +268,7 @@ function applyLatestOrderToCart() {
   cart = latestOrder.items.map((item) => ({
     id: Number.parseInt(item.id, 10) || 0,
     name: String(item.name || '').trim(),
-    image: String(item.image || item.icon || '').trim(),
+    image: String(item.image || '').trim(),
     price: Number(item.price) > 0 ? Number(item.price) : 0,
     quantity: parseQuantity(item.quantity),
   })).filter((item) => item.id > 0 && item.name !== '' && item.price > 0);
@@ -280,8 +301,12 @@ function renderLatestOrder() {
 
   const previewItems = latestOrder.items.slice(0, 4).map((item) => {
     const quantity = parseQuantity(item.quantity);
-    const image = item.image || item.icon || '☕';
-    return `<span class="badge rounded-pill text-bg-light border fw-normal px-2 py-1" style="font-size:0.8rem;">${escapeHtml(image)} ${escapeHtml(item.name || '')} x${quantity}</span>`;
+    return `
+      <span class="badge rounded-pill text-bg-light border fw-normal px-2 py-1 d-inline-flex align-items-center gap-2" style="font-size:0.8rem;">
+        ${renderProductImage(item.image, item.name, 'latest-order-thumb')}
+        <span>${escapeHtml(item.name || '')} x${quantity}</span>
+      </span>
+    `;
   }).join('');
 
   const extraItemsCount = Math.max(0, latestOrder.items.length - 4);
@@ -301,7 +326,7 @@ function renderLatestOrder() {
           ${extraItemsCount > 0 ? `<span class="badge rounded-pill text-bg-secondary px-2 py-1" style="font-size:0.8rem;">+${extraItemsCount} more</span>` : ''}
         </div>
         ${notesLine}
-        <div class="small text-warning fw-semibold mt-2" style="font-size:1rem;">Click to reorder</div>
+        <div class="small text-warning fw-semibold mt-2 text-center" style="font-size:1rem;">Click to reorder</div>
       </div>
     </button>
   `;
