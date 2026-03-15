@@ -55,7 +55,7 @@
         <div class="mb-3">
           <label class="form-label fw-semibold">Product picture</label>
           <div class="d-flex align-items-center gap-3">
-            <img src="<?= BASE_URL ?>/uploads/<?= htmlspecialchars($product['image']) ?>"
+            <img src=" /uploads/<?= htmlspecialchars($product['image']) ?>"
                  width="100" height="100"
                  class="rounded-3 object-fit-cover border"> <!-- ✅ fixed -->
             <span class="text-muted small">Current image</span>

@@ -38,7 +38,7 @@
               <td><?= number_format($product['price'], 2) ?> EGP</td>
               <td>
                 <?php if (!empty($product['image'])): ?>
-                  <img src="<?= BASE_URL ?>/uploads/<?= htmlspecialchars($product['image']) ?>"
+                  <img src="/uploads/<?= htmlspecialchars($product['image']) ?>"
                        width="60" height="60"
                        class="rounded-3 object-fit-cover border">
                 <?php else: ?>
