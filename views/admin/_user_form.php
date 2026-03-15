@@ -82,7 +82,7 @@ function fieldVal(string $key, array $old, array $user): string {
       <label class="form-label fw-semibold">Profile Picture</label>
       <?php if ($isEdit && !empty($user['pic'])): ?>
         <div class="mb-2">
-          <img src="<?= BASE_URL ?>/<?= htmlspecialchars(ltrim($user['pic'], '/')) ?>"
+          <img src="/<?= htmlspecialchars(ltrim($user['pic'], '/')) ?>"
                width="60" height="60"
                class="rounded-circle border"
                style="object-fit:cover;"

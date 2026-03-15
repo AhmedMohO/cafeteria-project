@@ -1,4 +1,4 @@
-<?php $pageTitle = "Users – Admin"; ?>
+<?php use Core\Auth; $pageTitle = "Users – Admin"; ?>
 <?php include __DIR__ . '/../layouts/head.php'; ?>
 <?php include __DIR__ . '/../layouts/navbar_admin.php'; ?>
 
@@ -85,15 +85,20 @@
             <td><?= htmlspecialchars($u['ext'] ?? '—') ?></td>
             <td>
               <div class="d-flex gap-1">
-                <a href="<?= BASE_URL ?>/admin/users/edit?id=<?= $u['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                <a href="<?= BASE_URL ?>/admin/users/edit/<?= $u['id'] ?>" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
                 
                 <?php if ($u['is_active']): ?>
-                  <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $u['id'] ?>">
-                    <i class="bi bi-trash"></i>
-                  </button>
+                  <?php if ((int)$u['id'] === (int)\Core\Auth::user()['id']): ?>
+                    <button type="button" class="btn btn-sm btn-outline-danger" disabled title="Cannot delete your own account">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  <?php else: ?>
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $u['id'] ?>">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  <?php endif; ?>
                 <?php else: ?>
-                  <form method="POST" action="<?= BASE_URL ?>/admin/users/activate" class="d-inline">
-                    <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                  <form method="POST" action="<?= BASE_URL ?>/admin/users/activate/<?= $u['id'] ?>" class="d-inline">
                     <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-person-check-fill"></i></button>
                   </form>
                 <?php endif; ?>
@@ -114,8 +119,7 @@
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     
-                    <form method="POST" action="<?= BASE_URL ?>/admin/users/delete" class="d-inline">
-                      <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                    <form method="POST" action="<?= BASE_URL ?>/admin/users/delete/<?= $u['id'] ?>" class="d-inline">
                       <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                   </div>

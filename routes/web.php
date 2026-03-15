@@ -73,7 +73,7 @@ Router::get('/admin/users', [UserController::class, 'index'], [
     'AuthMiddleware',
     'AdminMiddleware'
 ]);
-Router::post('/admin/users/delete', [UserController::class, 'delete'], [
+Router::post('/admin/users/delete/{id}', [UserController::class, 'delete'], [
     'AuthMiddleware',
     'AdminMiddleware'
 ]);
@@ -85,15 +85,15 @@ Router::post('/admin/users', [UserController::class, 'store'], [
     'AuthMiddleware',
     'AdminMiddleware'
 ]);
-Router::get('/admin/users/edit', [UserController::class, 'edit'], [
+Router::get('/admin/users/edit/{id}', [UserController::class, 'edit'], [
     'AuthMiddleware',
     'AdminMiddleware'
 ]);
-Router::post('/admin/users/update', [UserController::class, 'update'], [
+Router::post('/admin/users/update/{id}', [UserController::class, 'update'], [
     'AuthMiddleware',
     'AdminMiddleware'
 ]);
-Router::post('/admin/users/activate', [UserController::class, 'activate'], [
+Router::post('/admin/users/activate/{id}', [UserController::class, 'activate'], [
     'AuthMiddleware',
     'AdminMiddleware'
 ]);

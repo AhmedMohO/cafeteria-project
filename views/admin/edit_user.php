@@ -3,7 +3,7 @@ $pageTitle = "Edit User – Admin";
 include __DIR__ . '/../layouts/head.php';
 include __DIR__ . '/../layouts/navbar_admin.php';
 
-$formAction = BASE_URL . '/admin/users/update';
+$formAction = BASE_URL . '/admin/users/update/' . (int)($user['id'] ?? 0);
 $isEdit = true;
 ?>
 
