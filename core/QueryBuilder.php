@@ -17,6 +17,12 @@ protected $offsetVal;
     protected $limit;
     protected $orderBy;
 
+    ///
+
+    protected $fromExpr = null;
+    protected $offsetClause = null;
+    ///
+
     public function __construct($db, $table)
     {
         $this->db = $db;
@@ -146,9 +152,26 @@ protected $offsetVal;
         return $stmt->execute($this->bindings);
     }
 
+    // public function count()
+    // {
+    //     $sql = "SELECT COUNT(*) as count FROM {$this->table} ";
+
+    //     $sql .= $this->buildWhere();
+
+    //     $stmt = $this->db->prepare($sql);
+    //     $stmt->execute($this->bindings);
+
+    //     return $stmt->fetch()['count'];
+    // }
+
     public function count()
     {
-        $sql = "SELECT COUNT(*) as count FROM {$this->table} ";
+        $from = $this->fromExpr ?? $this->table;
+        $sql = "SELECT COUNT(*) as count FROM {$from} ";
+
+        if (!empty($this->joins)) {
+            $sql .= implode(' ', $this->joins) . ' ';
+        }
 
         $sql .= $this->buildWhere();
 
@@ -157,7 +180,6 @@ protected $offsetVal;
 
         return $stmt->fetch()['count'];
     }
-
 
     public function join($table, $first, $operator, $second, $type = 'LEFT')
     {
@@ -171,4 +193,37 @@ protected $offsetVal;
         $this->offsetVal = "OFFSET $offset";
         return $this;
     }
+
+
+    // start
+
+
+    public function whereIn(string $column, array $values): static
+    {
+        if (empty($values)) {
+            $this->where[] = '1 = 0';
+            return $this;
+        }
+        $placeholders = implode(',', array_fill(0, count($values), '?'));
+        $this->where[] = "{$column} IN ({$placeholders})";
+        $this->bindings = array_merge($this->bindings, array_values($values));
+        return $this;
+    }
+
+    public function whereRaw(string $condition, array $bindings = []): static
+    {
+        $this->where[] = $condition;
+        $this->bindings = array_merge($this->bindings, $bindings);
+        return $this;
+    }
+    
+    public function whereLike(string $column, string $value): static
+    {
+        $this->where[] = "{$column} LIKE ?";
+        $this->bindings[] = '%' . $value . '%';
+        return $this;
+    }
+
+
+
 }

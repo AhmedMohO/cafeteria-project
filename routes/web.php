@@ -6,14 +6,67 @@ use App\Controllers\Admin\UserController;
 use App\Controllers\Admin\ProductController;
 use App\Controllers\Admin\CategoryController;
 use App\Controllers\Admin\OrderController;
+use App\Controllers\User\ProductController as UserProductController;
+use App\Controllers\User\OrderController as UserOrderController;
 
-Router::get('/user/home', [AuthController::class,'index'], [
-    'AuthMiddleware',
-]);
+// Router::get('/user/home', [AuthController::class,'index'], [
+//     'AuthMiddleware',
+// ]);
 
 Router::get('/login', [AuthController::class, 'loginForm']);
 Router::post('/login', [AuthController::class, 'login']);
 Router::get('/logout', [AuthController::class, 'logout']);
+
+
+///
+
+Router::get('/home', [UserProductController::class, 'index'], [
+    'AuthMiddleware'
+]);
+
+Router::get('/user/my-orders', [UserOrderController::class, 'myOrders'], [
+    'AuthMiddleware'
+]);
+Router::post('/user/my-orders/cancel', [UserOrderController::class, 'cancelOrder'], [
+    'AuthMiddleware'
+]);
+
+Router::get('/user/my_orders.php', [UserOrderController::class, 'myOrders'], [
+    'AuthMiddleware'
+]);
+Router::post('/user/my_orders.php', [UserOrderController::class, 'cancelOrder'], [
+    'AuthMiddleware'
+]);
+
+Router::get('/user/orders', [UserOrderController::class, 'ordersAlias'], [
+    'AuthMiddleware'
+]);
+
+Router::get('/user/orders.php', [UserOrderController::class, 'ordersAlias'], [
+    'AuthMiddleware'
+]);
+
+Router::get('/user/search-products', [UserProductController::class, 'searchProducts'], [
+    'AuthMiddleware'
+]);
+Router::get('/user/latest-order', [UserOrderController::class, 'latestOrder'], [
+    'AuthMiddleware'
+]);
+Router::post('/user/place-order', [UserOrderController::class, 'placeOrder'], [
+    'AuthMiddleware'
+]);
+
+Router::get('/user/search_products.php', [UserProductController::class, 'searchProducts'], [
+    'AuthMiddleware'
+]);
+Router::get('/user/latest_order.php', [UserOrderController::class, 'latestOrder'], [
+    'AuthMiddleware'
+]);
+Router::post('/user/place_order.php', [UserOrderController::class, 'placeOrder'], [
+    'AuthMiddleware'
+]);
+
+
 
 //*- Users Routes
 Router::get('/admin/users', [UserController::class, 'index'], [

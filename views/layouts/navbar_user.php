@@ -2,10 +2,34 @@
 
 use Core\Auth;
 
- $current = basename($_SERVER['PHP_SELF']); ?>
+$currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+
+$runtimeBase = '';
+if (PHP_SAPI !== 'cli-server' && defined('BASE_URL')) {
+  $runtimeBase = (string) (parse_url(BASE_URL, PHP_URL_PATH) ?: '');
+  if ($runtimeBase === '/') {
+    $runtimeBase = '';
+  }
+}
+
+$pathNoBase = $currentPath;
+if ($runtimeBase !== '' && strpos($currentPath, $runtimeBase) === 0) {
+  $pathNoBase = substr($currentPath, strlen($runtimeBase));
+  if ($pathNoBase === '' || $pathNoBase === false) {
+    $pathNoBase = '/';
+  }
+}
+
+$href = static function (string $path) use ($runtimeBase): string {
+  return $runtimeBase . '/' . ltrim($path, '/');
+};
+
+$isHome = preg_match('#/home$#', rtrim($pathNoBase, '/')) === 1;
+$isOrders = preg_match('#/user/(my-orders|my_orders\.php|orders(?:\.php)?)$#', rtrim($pathNoBase, '/')) === 1;
+?>
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
   <div class="container">
-    <a class="navbar-brand fw-bold text-warning fs-5" href="<?= BASE_URL ?>/user/home">
+    <a class="navbar-brand fw-bold text-warning fs-5" href="<?= htmlspecialchars($href('/home')) ?>">
       <i class="bi bi-cup-hot-fill me-2"></i>Cafeteria
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navUser">
@@ -14,12 +38,12 @@ use Core\Auth;
     <div class="collapse navbar-collapse" id="navUser">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link <?= $current==='/user/home'?'active fw-semibold':'' ?>" href="<?= BASE_URL ?>/user/home">
+          <a class="nav-link <?= $isHome ? 'active fw-semibold' : '' ?>" href="<?= htmlspecialchars($href('/home')) ?>">
             <i class="bi bi-house me-1"></i>Home
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current==='/user/my_orders'?'active fw-semibold':'' ?>" href="<?= BASE_URL ?>/user/my_orders">
+          <a class="nav-link <?= $isOrders ? 'active fw-semibold' : '' ?>" href="<?= htmlspecialchars($href('/user/my-orders')) ?>">
             <i class="bi bi-receipt me-1"></i>My Orders
           </a>
         </li>
