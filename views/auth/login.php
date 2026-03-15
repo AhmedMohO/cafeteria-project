@@ -11,7 +11,7 @@
         <p class="text-muted small">Sign in to your account</p>
       </div>
 
-      <form method="POST" action="/cafeteria-project/public/login">
+<form method="POST" action="<?= BASE_PATH ?>/login">
 
         <div class="mb-3">
           <label class="form-label fw-semibold">Email address</label>
