@@ -16,7 +16,7 @@ class ProductController extends Controller
 		$rooms = $roomModel->allRooms();
 		$currentUser = Auth::user();
 
-		$this->view('index', [
+		$this->view('user/home', [
 			'rooms' => $rooms,
 			'currentUser' => $currentUser,
 		]);
