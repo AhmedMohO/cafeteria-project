@@ -2,8 +2,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-define('BASE_URL', '/cafeteria-project/public'); 
-
+define('BASE_URL', '/cafeteria-project/public');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
