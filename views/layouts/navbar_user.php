@@ -50,10 +50,17 @@ $isOrders = preg_match('#/user/(my-orders|my_orders\.php|orders(?:\.php)?)$#', r
       </ul>
       <div class="d-flex align-items-center gap-2">
         <?php 
-          $user = Auth::user();
+          $authUser = Auth::user();
         ?>
-        <img class="rounded-circle" src="https://ui-avatars.com/api/?name=<?= urlencode($user['name']) ?>&background=f59e0b&color=fff&size=32&bold=true" alt="">
-        <span class="fw-semibold text-dark"><?= htmlspecialchars($user['name'] ?? 'User') ?></span>
+         <?php
+            if (!empty($authUser['pic'])) {
+                $avatar = '/' . ltrim($authUser['pic'], '/');
+            } else {
+                $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($authUser['name']) . '&background=f59e0b&color=fff&size=32&bold=true';
+            }
+        ?>
+        <img class="rounded-circle" width="32" height="32" src="<?= htmlspecialchars($avatar) ?>" alt="" onerror="this.src='https://ui-avatars.com/api/?name=<?= urlencode($authUser['name']) ?>&background=f59e0b&color=fff&size=32&bold=true';">
+        <span class="fw-semibold text-dark"><?= htmlspecialchars($authUser['name'] ?? 'User') ?></span>
       </div>
     </div>
   </div>
