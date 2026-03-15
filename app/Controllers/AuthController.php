@@ -22,7 +22,7 @@ class AuthController extends Controller
             if (Auth::role() === 'admin') {
                 header("Location: " . BASE_URL . "/admin/dashboard");
             } else {
-                header("Location: " . BASE_URL . "/home");
+                header("Location: " . BASE_URL . "/index");
             }
 
             exit;
@@ -52,5 +52,9 @@ class AuthController extends Controller
     {
         Auth::logout();
         $this->view('auth/login');
+    }
+    public function index()
+    {
+        $this->view('user/home');
     }
 }

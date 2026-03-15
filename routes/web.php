@@ -7,9 +7,9 @@ use App\Controllers\Admin\ProductController;
 use App\Controllers\Admin\CategoryController;
 use App\Controllers\Admin\OrderController;
 
-Router::get('/', function () {
-    echo "Welcome to the Cafeteria Management System!";
-});
+Router::get('/user/home', [AuthController::class,'index'], [
+    'AuthMiddleware',
+]);
 
 Router::get('/login', [AuthController::class, 'loginForm']);
 Router::post('/login', [AuthController::class, 'login']);
