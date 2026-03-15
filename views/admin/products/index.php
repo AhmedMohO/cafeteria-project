@@ -37,7 +37,7 @@
               <td><?= number_format($product['price'], 2) ?> EGP</td>
               <td>
                 <?php if (!empty($product['image'])): ?>
-                  <img src="<?= BASE_URL ?>/public/uploads/<?= htmlspecialchars($product['image']) ?>"
+                  <img src="<?= BASE_URL ?>/uploads/<?= htmlspecialchars($product['image']) ?>"
                        width="60" height="60"
                        class="rounded-3 object-fit-cover border">
                 <?php else: ?>
@@ -47,13 +47,13 @@
               <td>
                 <div class="d-flex gap-1 flex-wrap">
                   <!-- Toggle -->
-                  <form method="POST" action="<?= BASE_PATH ?>/admin/products/toggle/<?= $product['id'] ?>">
+                  <form method="POST" action="<?= BASE_URL ?>/admin/products/toggle/<?= $product['id'] ?>">
                         <button class="btn btn-sm rounded-3 <?= $product['status'] === 'available' ? 'btn-success' : 'btn-secondary' ?>">
                             <?= $product['status'] === 'available' ? 'Available' : 'Unavailable' ?>
                         </button>
                  </form>
                   <!-- Edit -->
-                  <a href="<?= BASE_PATH ?>/admin/products/edit/<?= $product['id'] ?>"
+                  <a href="<?= BASE_URL ?>/admin/products/edit/<?= $product['id'] ?>"
                      class="btn btn-sm btn-primary rounded-3">
                     <i class="bi bi-pencil me-1"></i>Edit
                   </a>

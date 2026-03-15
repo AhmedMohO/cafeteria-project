@@ -33,7 +33,6 @@ class OrderController extends Controller
         $this->startSession();
         $pdo = $this->db();
 
-        // Today's orders & revenue (raw PDO — needs CURDATE() and SUM)
         $row = $pdo->query("
             SELECT COUNT(*) AS cnt, COALESCE(SUM(total_price), 0) AS rev
             FROM orders
@@ -43,17 +42,11 @@ class OrderController extends Controller
         $todayOrders  = (int) $row['cnt'];
         $todayRevenue = number_format((float) $row['rev'], 2);
 
-        // Pending deliveries — QueryBuilder
-        $pendingDeliveries = (new Order())
-            ->where('status', 'processing')
-            ->count();
-        // Also add out_for_delivery (QueryBuilder doesn't support IN, use raw)
         $pendingDeliveries = (int) $pdo->query("
             SELECT COUNT(*) FROM orders
             WHERE status IN ('processing', 'out_for_delivery')
         ")->fetchColumn();
 
-        // Total users — QueryBuilder
         $totalUsers = (new User())->where('role', 'user')->count();
 
         $this->view('admin/dashboard', compact(
@@ -72,7 +65,6 @@ class OrderController extends Controller
         $currentPage = max(1, (int) ($_GET['page'] ?? 1));
         $offset      = ($currentPage - 1) * self::PER_PAGE;
 
-        // Total active orders
         $total = (int) $pdo->query("
             SELECT COUNT(*) FROM orders
             WHERE status IN ('processing', 'out_for_delivery')
@@ -80,7 +72,6 @@ class OrderController extends Controller
 
         $totalPages = (int) ceil($total / self::PER_PAGE);
 
-        // Fetch orders with user + room (raw PDO — needs JOIN)
         $stmt = $pdo->prepare("
             SELECT  o.id,
                     o.total_price,
@@ -102,7 +93,6 @@ class OrderController extends Controller
         $stmt->execute();
         $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Attach items to each order (batched)
         if (!empty($orders)) {
             $ids          = array_column($orders, 'id');
             $placeholders = implode(',', array_fill(0, count($ids), '?'));
@@ -140,7 +130,6 @@ class OrderController extends Controller
         $orderId = (int) ($_POST['order_id'] ?? 0);
 
         if ($orderId > 0) {
-            // QueryBuilder update
             (new Order())
                 ->where('id', $orderId)
                 ->update(['status' => 'done', 'updated_at' => date('Y-m-d H:i:s')]);
@@ -155,20 +144,18 @@ class OrderController extends Controller
     }
 
     // =========================================================================
-    // GET /admin/manual_order
+    // GET /admin/manual-order
     // =========================================================================
     public function manualForm(): void
     {
         $this->startSession();
         $pdo = $this->db();
 
-        // Users — QueryBuilder
         $users = (new User())
             ->where('role', 'user')
             ->orderBy('name', 'ASC')
             ->get();
 
-        // Products with category (raw PDO — needs JOIN)
         $products = $pdo->query("
             SELECT  p.id, p.name, p.price, p.image,
                     c.name AS category_name
@@ -178,12 +165,11 @@ class OrderController extends Controller
             ORDER BY c.name ASC, p.name ASC
         ")->fetchAll(PDO::FETCH_ASSOC);
 
-        // Rooms
         $rooms = $pdo->query("
             SELECT id, no, name FROM rooms ORDER BY no ASC
         ")->fetchAll(PDO::FETCH_ASSOC);
 
-        $this->view('admin/manual_order', compact('users', 'products', 'rooms'));
+        $this->view('admin/manual_order', compact('users', 'products', 'rooms')); // ✅ underscore
     }
 
     // =========================================================================
@@ -201,11 +187,10 @@ class OrderController extends Controller
 
         if ($targetUserId <= 0) {
             $_SESSION['error'] = 'Please select a user.';
-            header('Location: ' . BASE_URL . '/admin/manual_order');
+            header('Location: ' . BASE_URL . '/admin/manual-order'); // ✅ hyphen
             exit;
         }
 
-        // Filter items with qty > 0
         $selectedItems = [];
         foreach ($items as $productId => $qty) {
             $qty = (int) $qty;
@@ -216,11 +201,10 @@ class OrderController extends Controller
 
         if (empty($selectedItems)) {
             $_SESSION['error'] = 'Please select at least one product.';
-            header('Location: ' . BASE_URL . '/admin/manual_order');
+            header('Location: ' . BASE_URL . '/admin/manual-order'); // ✅ hyphen
             exit;
         }
 
-        // Fetch product details — QueryBuilder
         $placeholders = implode(',', array_fill(0, count($selectedItems), '?'));
         $prodStmt = $pdo->prepare("
             SELECT id, name, price FROM products
@@ -231,26 +215,22 @@ class OrderController extends Controller
 
         if (empty($products)) {
             $_SESSION['error'] = 'No valid products selected.';
-            header('Location: ' . BASE_URL . '/admin/manual-order');
+            header('Location: ' . BASE_URL . '/admin/manual-order'); // ✅ hyphen
             exit;
         }
 
-        // Fall back to user's room if not posted
         if (!$roomId) {
             $userModel = (new User())->where('id', $targetUserId)->first();
             $roomId    = $userModel['room_id'] ?? null;
         }
 
-        // Calculate total
         $totalPrice = 0.0;
         foreach ($products as $p) {
             $totalPrice += (float) $p['price'] * $selectedItems[$p['id']];
         }
 
-        // Insert order + items in a transaction
         $pdo->beginTransaction();
         try {
-            // Insert order — QueryBuilder
             (new Order())->create([
                 'user_id'     => $targetUserId,
                 'room_id'     => $roomId,
@@ -263,7 +243,6 @@ class OrderController extends Controller
 
             $orderId = (int) $pdo->lastInsertId();
 
-            // Insert order items — raw PDO (batch insert)
             $itemStmt = $pdo->prepare("
                 INSERT INTO order_items
                     (order_id, product_id, name, price, quantity, created_at, updated_at)
@@ -287,7 +266,7 @@ class OrderController extends Controller
             $_SESSION['error'] = 'Failed to place order. Please try again.';
         }
 
-        header('Location: ' . BASE_URL . '/admin/manual_order');
+        header('Location: ' . BASE_URL . '/admin/manual-order'); // ✅ hyphen
         exit;
     }
 
@@ -303,14 +282,12 @@ class OrderController extends Controller
         $dateTo   = $_GET['date_to']   ?? '';
         $userId   = (int) ($_GET['user_id'] ?? 0);
 
-        // Build WHERE clause
         $where  = "WHERE o.status = 'done'";
         $params = [];
 
         if ($dateFrom !== '') { $where .= " AND DATE(o.created_at) >= ?"; $params[] = $dateFrom; }
         if ($dateTo   !== '') { $where .= " AND DATE(o.created_at) <= ?"; $params[] = $dateTo; }
 
-        // Users summary
         $summaryStmt = $pdo->prepare("
             SELECT  u.id,
                     u.name,
@@ -325,7 +302,6 @@ class OrderController extends Controller
         $summaryStmt->execute($params);
         $usersSummary = $summaryStmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Selected user detail
         $selectedUser = null;
         $orders       = [];
         $grandTotal   = '0.00';
@@ -333,14 +309,12 @@ class OrderController extends Controller
         $totalPages   = 1;
 
         if ($userId > 0) {
-            // QueryBuilder for simple user lookup
             $selectedUser = (new User())->where('id', $userId)->first() ?: null;
 
             if ($selectedUser) {
                 $userWhere  = $where . " AND o.user_id = ?";
                 $userParams = array_merge($params, [$userId]);
 
-                // Grand total
                 $gtStmt = $pdo->prepare("
                     SELECT COALESCE(SUM(o.total_price), 0)
                     FROM   orders o $userWhere
@@ -348,7 +322,6 @@ class OrderController extends Controller
                 $gtStmt->execute($userParams);
                 $grandTotal = number_format((float) $gtStmt->fetchColumn(), 2);
 
-                // Pagination
                 $currentPage = max(1, (int) ($_GET['page'] ?? 1));
                 $offset      = ($currentPage - 1) * self::PER_PAGE;
 
@@ -356,7 +329,6 @@ class OrderController extends Controller
                 $countStmt->execute($userParams);
                 $totalPages = (int) ceil((int) $countStmt->fetchColumn() / self::PER_PAGE);
 
-                // Fetch paginated orders (integers injected directly to avoid PDO quoting)
                 $limit = self::PER_PAGE;
                 $ordStmt = $pdo->prepare("
                     SELECT o.id, o.total_price, o.created_at, o.notes
@@ -368,7 +340,6 @@ class OrderController extends Controller
                 $ordStmt->execute($userParams);
                 $orders = $ordStmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Attach items (batched)
                 if (!empty($orders)) {
                     $ids          = array_column($orders, 'id');
                     $placeholders = implode(',', array_fill(0, count($ids), '?'));

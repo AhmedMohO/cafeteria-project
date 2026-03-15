@@ -16,7 +16,7 @@
   <!-- Form Card -->
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-4">
-      <form method="POST" action="<?= BASE_PATH ?>/admin/products/store" enctype="multipart/form-data">
+      <form method="POST" action="<?= BASE_URL ?>/admin/products/store" enctype="multipart/form-data">
 
         <!-- Product Name -->
         <div class="mb-3">
