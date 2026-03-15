@@ -39,7 +39,8 @@ class User extends Model
 
         $sql = "SELECT u.*, r.name AS room_name, r.no AS room_no
                 FROM users u
-                LEFT JOIN rooms r ON u.room_id = r.id";
+                LEFT JOIN rooms r ON u.room_id = r.id
+                WHERE u.role = 'user'";
 
         if ($status === 'active') {
             $sql .= " AND u.is_active = 1";

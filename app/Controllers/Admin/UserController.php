@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use Core\Controller;
 use App\Models\User;
 use App\Models\Room;
+use Core\Auth;
 
 class UserController extends Controller
 {
@@ -88,11 +89,10 @@ class UserController extends Controller
         exit;
     }
 
-    public function edit()
+    public function edit(int $id)
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        $id   = (int)($_GET['id'] ?? 0);
         $user = $this->userOP->find($id);
 
         if (!$user) {
@@ -109,11 +109,10 @@ class UserController extends Controller
         $this->view('admin/edit_user', compact('user', 'rooms', 'errors', 'old'));
     }
 
-    public function update()
+    public function update(int $id)
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        $id = (int)($_POST['id'] ?? 0);
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $password = trim($_POST['password'] ?? '');
@@ -139,7 +138,7 @@ class UserController extends Controller
         if ($errors) {
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = compact('name', 'email', 'room_id', 'ext');
-            header("Location: " . BASE_URL . "/admin/users/edit?id=$id");
+            header("Location: " . BASE_URL . "/admin/users/edit/{$id}");
             exit;
         }
 
@@ -169,11 +168,10 @@ class UserController extends Controller
         exit;
     }
 
-    public function delete()
+    public function delete(int $id)
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        $id = (int)($_POST['id'] ?? 0);
         $user = $this->userOP->find($id);
 
         if (!$user) {
@@ -196,11 +194,10 @@ class UserController extends Controller
         exit;
     }
 
-    public function activate()
+    public function activate(int $id)
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        $id = (int)($_POST['id'] ?? 0);
         $user = $this->userOP->find($id);
 
         if (!$user) {
