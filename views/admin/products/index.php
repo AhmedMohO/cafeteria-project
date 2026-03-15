@@ -1,6 +1,7 @@
 <?php require __DIR__ . '/../../layouts/head.php'; ?>
 <?php require __DIR__ . '/../../layouts/navbar_admin.php'; ?>
 
+
 <div class="container py-4">
 
   <!-- Header -->
@@ -15,7 +16,7 @@
   <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-0">
       <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden">
-        <thead class="table-dark">
+        <thead class="table-blue">
           <tr>
             <th>Product</th>
             <th>Category</th>

@@ -33,7 +33,7 @@ $productImageUrl = static function (string $image) use ($app): string {
 		return '';
 	}
 
-	return $app('/uploads/' . rawurlencode($image));
+    return BASE_URL . '/uploads/' . rawurlencode($image); 
 };
 ?>
 
