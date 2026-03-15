@@ -104,7 +104,7 @@ function fieldVal(string $key, array $old, array $user): string {
       <i class="bi bi-<?= $isEdit ? 'check-lg' : 'person-plus' ?> me-1"></i>
       <?= $isEdit ? 'Save Changes' : 'Add User' ?>
     </button>
-    <a href="/admin/users" class="btn btn-outline-secondary">Cancel</a>
+    <a href="<?= BASE_URL ?>/admin/users" class="btn btn-outline-secondary">Cancel</a>
   </div>
 
 </form>

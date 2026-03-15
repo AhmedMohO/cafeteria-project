@@ -5,7 +5,7 @@ use Core\Auth;
  $current = basename($_SERVER['PHP_SELF']); ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom shadow-sm">
   <div class="container">
-    <a class="navbar-brand fw-bold text-warning fs-5" href="dashboard">
+    <a class="navbar-brand fw-bold text-warning fs-5" href="<?= BASE_URL ?>/admin/dashboard">
       <i class="bi bi-cup-hot-fill me-2"></i>Cafeteria
       <span class="badge bg-warning text-dark ms-1 align-middle" style="font-size:0.6rem!important;">ADMIN</span>
     </a>
@@ -15,32 +15,32 @@ use Core\Auth;
     <div class="collapse navbar-collapse" id="navAdmin">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link <?= $current==='dashboard.php'?'active':'' ?>" href="/admin/dashboard">
+          <a class="nav-link <?= $current==='dashboard.php'?'active':'' ?>" href="<?= BASE_URL ?>/admin/dashboard">
             <i class="bi bi-house me-1"></i>Home
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= in_array($current,['products.php','add_product.php'])?'active':'' ?>" href="/admin/products">
+          <a class="nav-link <?= in_array($current,['products.php','add_product.php'])?'active':'' ?>" href="<?= BASE_URL ?>/admin/products">
             <i class="bi bi-box-seam me-1"></i>Products
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= in_array($current,['users.php','add_user.php'])?'active':'' ?>" href="/admin/users">
+          <a class="nav-link <?= in_array($current,['users.php','add_user.php'])?'active':'' ?>" href="<?= BASE_URL ?>/admin/users">
             <i class="bi bi-people me-1"></i>Users
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current==='manual_order.php'?'active':'' ?>" href="/admin/manual-order">
+          <a class="nav-link <?= $current==='manual_order.php'?'active':'' ?>" href="<?= BASE_URL ?>/admin/manual-order">
             <i class="bi bi-pencil-square me-1"></i>Manual Order
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current==='checks.php'?'active':'' ?>" href="/admin/checks">
+          <a class="nav-link <?= $current==='checks.php'?'active':'' ?>" href="<?= BASE_URL ?>/admin/checks">
             <i class="bi bi-clipboard-check me-1"></i>Checks
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current==='orders.php'?'active':'' ?>" href="/admin/orders">
+          <a class="nav-link <?= $current==='orders.php'?'active':'' ?>" href="<?= BASE_URL ?>/admin/orders">
             <i class="bi bi-list-check me-1"></i>Orders
           </a>
         </li>

@@ -62,7 +62,7 @@ class UserController extends Controller
         if ($errors) {
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = compact('name', 'email', 'room_id', 'ext');
-            header('Location: /admin/users/create');
+            header('Location: ' . BASE_URL . '/admin/users/create');
             exit;
         }
         $pic = '';
@@ -83,7 +83,7 @@ class UserController extends Controller
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
-        header('Location: /admin/users');
+        header('Location: ' . BASE_URL . '/admin/users');
         exit;
     }
 
@@ -96,7 +96,7 @@ class UserController extends Controller
 
         if (!$user) {
             $_SESSION['error'] = 'User not found.';
-            header('Location: /admin/users');
+            header('Location: ' . BASE_URL . '/admin/users');
             exit;
         }
 
@@ -124,7 +124,7 @@ class UserController extends Controller
         $user = $this->userOP->find($id);
         if (!$user) {
             $_SESSION['error'] = 'User not found.';
-            header('Location: /admin/users');
+            header('Location: ' . BASE_URL . '/admin/users');
             exit;
         }
 
@@ -138,7 +138,7 @@ class UserController extends Controller
         if ($errors) {
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = compact('name', 'email', 'room_id', 'ext');
-            header("Location: /admin/users/edit?id=$id");
+            header("Location: " . BASE_URL . "/admin/users/edit?id=$id");
             exit;
         }
 
@@ -164,7 +164,7 @@ class UserController extends Controller
 
         $this->userOP->updateWhere('id', $id, $data);
 
-        header('Location: /admin/users');
+        header('Location: ' . BASE_URL . '/admin/users');
         exit;
     }
 
@@ -177,7 +177,7 @@ class UserController extends Controller
 
         if (!$user) {
             $_SESSION['error'] = 'User not found.';
-            header('Location: /admin/users');
+            header('Location: ' . BASE_URL . '/admin/users');
             exit;
         }
 
@@ -191,7 +191,7 @@ class UserController extends Controller
             $this->userOP->hardDelete($id);
         }
 
-        header('Location: /admin/users');
+        header('Location: ' . BASE_URL . '/admin/users');
         exit;
     }
 

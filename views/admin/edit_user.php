@@ -3,7 +3,7 @@ $pageTitle = "Edit User – Admin";
 include __DIR__ . '/../layouts/head.php';
 include __DIR__ . '/../layouts/navbar_admin.php';
 
-$formAction = '/admin/users/update';
+$formAction = BASE_URL . '/admin/users/update';
 $isEdit = true;
 ?>
 
@@ -11,7 +11,7 @@ $isEdit = true;
 
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold mb-0"><i class="bi bi-pencil me-2 text-warning"></i>Edit User</h4>
-    <a href="/admin/users" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
+    <a href="<?= BASE_URL ?>/admin/users" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
   </div>
 
   <div class="card border-0 shadow-sm rounded-4">
