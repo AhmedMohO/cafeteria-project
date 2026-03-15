@@ -35,7 +35,7 @@ $app = static function (string $path) use ($appBase): string {
                     <div class="mb-3">
                         <label class="form-label fw-semibold small">Deliver to Room</label>
                         <select id="order-room" class="form-select">
-                            <option value="">Select Room</option>
+                            <option value="" hidden>Select Room</option>
                             <?php foreach (($rooms ?? []) as $room): ?>
                                 <?php
                                 $roomValue = (string) ($room['value'] ?? (($room['id'] ?? 0) > 0 ? (string) ((int) $room['id']) : ''));

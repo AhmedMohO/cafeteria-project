@@ -8,207 +8,85 @@ class Product extends Model
 {
     protected $table = "products";
 
-    private array $columnsCache = [];
-
-    private function hasColumn(string $column): bool
+    public static function mapNameToIcon(string $name): string
     {
-        if (array_key_exists($column, $this->columnsCache)) {
-            return $this->columnsCache[$column];
-        }
+        $normalized = self::normalizeProductName($name);
 
-        try {
-            $stmt = $this->db->prepare('SHOW COLUMNS FROM products LIKE ?');
-            $stmt->execute([$column]);
-            $exists = (bool) $stmt->fetch();
-            $this->columnsCache[$column] = $exists;
-            return $exists;
-        } catch (\Throwable $e) {
-            $this->columnsCache[$column] = false;
-            return false;
-        }
-    }
-
-    private function defaultProducts(): array
-    {
-        return [
-            ['name' => 'Tea', 'price' => 5.00, 'icon' => '☕'],
-            ['name' => 'Coffee', 'price' => 6.50, 'icon' => '☕'],
-            ['name' => 'Nescafe', 'price' => 8.00, 'icon' => '☕'],
-            ['name' => 'Cola', 'price' => 10.00, 'icon' => '🥤'],
-            ['name' => 'Juice', 'price' => 12.00, 'icon' => '🧃'],
-            ['name' => 'Water', 'price' => 3.00, 'icon' => '💧'],
-            ['name' => 'Milk', 'price' => 7.00, 'icon' => '🥛'],
-            ['name' => 'Cappuccino', 'price' => 15.00, 'icon' => '☕'],
-        ];
-    }
-
-    private function fallbackIconByName(string $name): string
-    {
-        $key = strtolower(trim($name));
-
-        $map = [
-            'tea' => '☕',
+        $iconMap = [
+            'tea' => '🍵',
             'coffee' => '☕',
-            'nescafe' => '☕',
+            'espresso' => '☕',
             'cappuccino' => '☕',
-            'cola' => '🥤',
-            'juice' => '🧃',
-            'water' => '💧',
+            'latte' => '☕',
+            'mocha' => '☕',
+            'chocolate' => '🍫',
             'milk' => '🥛',
+            'water' => '💧',
+            'juice' => '🧃',
+            'cola' => '🥤',
+            'soda' => '🥤',
+            'sandwich' => '🥪',
+            'burger' => '🍔',
+            'pizza' => '🍕',
+            'fries' => '🍟',
+            'chip' => '🍟',
+            'cake' => '🍰',
+            'donut' => '🍩',
+            'cookie' => '🍪',
+            'muffin' => '🧁',
+            'croissant' => '🥐',
+            'salad' => '🥗',
         ];
 
-        return $map[$key] ?? '☕';
-    }
-
-    private function sanitizeIconForDb(string $icon): string
-    {
-        $clean = preg_replace('/[\x{10000}-\x{10FFFF}]/u', '?', $icon);
-        $clean = trim((string) $clean);
-
-        return $clean !== '' ? $clean : '?';
-    }
-
-    private function normalizeIcons(array $rows): array
-    {
-        foreach ($rows as &$row) {
-            $icon = trim((string) ($row['image'] ?? ''));
-            if ($icon === '' || $icon === '?' || $icon === '??' || $icon === '???' || $icon === '�') {
-                $row['image'] = $this->fallbackIconByName((string) ($row['name'] ?? ''));
+        foreach ($iconMap as $keyword => $icon) {
+            if (str_contains($normalized, $keyword)) {
+                return $icon;
             }
         }
-        unset($row);
 
-        return $rows;
+        return '☕';
     }
 
-    private function seedCurrentSchemaIfEmpty(): void
+    public static function resolveIcon(string $name, string $icon = ''): string
     {
-        $count = (int) $this->db->query('SELECT COUNT(*) FROM products')->fetchColumn();
-        if ($count > 0) {
-            return;
+        $trimmedIcon = trim($icon);
+        if (self::isValidIcon($trimmedIcon)) {
+            return $trimmedIcon;
         }
 
-        $insert = $this->db->prepare(
-            'INSERT INTO products (category_id, name, price, icon, status)
-             VALUES (NULL, :name, :price, :icon, :status)'
-        );
-
-        foreach ($this->defaultProducts() as $product) {
-            $dbIcon = $this->sanitizeIconForDb((string) $product['icon']);
-
-            $insert->execute([
-                ':name' => $product['name'],
-                ':price' => $product['price'],
-                ':icon' => $dbIcon,
-                ':status' => 'available',
-            ]);
-        }
+        return self::mapNameToIcon($name);
     }
 
-    private function seedLegacySchemaIfEmpty(): void
+    private static function isValidIcon(string $icon): bool
     {
-        $count = (int) $this->db->query('SELECT COUNT(*) FROM products')->fetchColumn();
-        if ($count > 0) {
-            return;
+        if ($icon === '') {
+            return false;
         }
 
-        $insert = $this->db->prepare(
-            'INSERT INTO products (name, price, icon)
-             VALUES (:name, :price, :icon)'
-        );
-
-        foreach ($this->defaultProducts() as $product) {
-            $dbIcon = $this->sanitizeIconForDb((string) $product['icon']);
-
-            $insert->execute([
-                ':name' => $product['name'],
-                ':price' => $product['price'],
-                ':icon' => $dbIcon,
-            ]);
-        }
+        return !in_array($icon, ['?', '??', '???', '�'], true);
     }
 
-    private function queryCurrentSchema(string $search): array
+    private static function normalizeProductName(string $name): string
     {
-        $hasIcon = $this->hasColumn('icon');
-        $hasImage = $this->hasColumn('image');
-        $hasStatus = $this->hasColumn('status');
-
-        if ($hasIcon && $hasImage) {
-            $iconExpr = 'COALESCE(NULLIF(icon, ""), NULLIF(image, ""), "")';
-        } elseif ($hasIcon) {
-            $iconExpr = 'COALESCE(icon, "")';
-        } elseif ($hasImage) {
-            $iconExpr = 'COALESCE(image, "")';
-        } else {
-            $iconExpr = '""';
+        $normalized = strtolower(trim($name));
+        if ($normalized === '') {
+            return '';
         }
 
-        $sql = 'SELECT id, name, price, ' . $iconExpr . ' AS image
-                FROM products
-                WHERE 1=1';
-
-        if ($hasStatus) {
-            $sql .= ' AND status = "available"';
-        }
-
-        $bindings = [];
-
-        if ($search !== '') {
-            $sql .= ' AND name LIKE ?';
-            $bindings[] = '%' . $search . '%';
-        }
-
-        $sql .= ' ORDER BY name ASC';
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($bindings);
-
-        return $stmt->fetchAll();
-    }
-
-    private function queryLegacySchema(string $search): array
-    {
-        $sql = 'SELECT id, name, price, COALESCE(icon, "") AS image
-                FROM products';
-
-        $bindings = [];
-
-        if ($search !== '') {
-            $sql .= ' WHERE name LIKE ?';
-            $bindings[] = '%' . $search . '%';
-        }
-
-        $sql .= ' ORDER BY name ASC';
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($bindings);
-
-        return $stmt->fetchAll();
+        return (string) preg_replace('/\s+/', ' ', $normalized);
     }
 
     public function searchAvailable(string $search = ''): array
     {
-        try {
-            $rows = $this->queryCurrentSchema($search);
-            if (!empty($rows)) {
-                return $this->normalizeIcons($rows);
-            }
+        $qb = $this->query()
+            ->select('id, name, price, COALESCE(NULLIF(image, \'?\'), NULLIF(image, \'\'), \'\') AS image')
+            ->where('status', 'available')
+            ->orderBy('name', 'ASC');
 
-            $this->seedCurrentSchemaIfEmpty();
-            return $this->normalizeIcons($this->queryCurrentSchema($search));
-        } catch (\Throwable $e) {
-            try {
-                $rows = $this->queryLegacySchema($search);
-                if (!empty($rows)) {
-                    return $this->normalizeIcons($rows);
-                }
-
-                $this->seedLegacySchemaIfEmpty();
-                return $this->normalizeIcons($this->queryLegacySchema($search));
-            } catch (\Throwable $inner) {
-                return [];
-            }
+        if ($search !== '') {
+            $qb->whereLike('name', $search);
         }
+
+        return $qb->get();
     }
 }

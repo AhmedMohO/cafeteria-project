@@ -8,9 +8,12 @@ class QueryBuilder
     protected $table;
 
     protected $select = "*";
+    protected $fromExpr = null;
+    protected $joins = [];
     protected $where = [];
     protected $bindings = [];
     protected $limit;
+    protected $offsetClause = null;
     protected $orderBy;
 
     public function __construct($db, $table)
@@ -27,6 +30,18 @@ class QueryBuilder
             $this->select = $columns;
         }
 
+        return $this;
+    }
+
+    public function from(string $expression): static
+    {
+        $this->fromExpr = $expression;
+        return $this;
+    }
+
+    public function join(string $type, string $table, string $condition): static
+    {
+        $this->joins[] = strtoupper($type) . " JOIN {$table} ON {$condition}";
         return $this;
     }
 
@@ -50,6 +65,38 @@ class QueryBuilder
         return $this;
     }
 
+    public function offset(int $offset): static
+    {
+        $this->offsetClause = "OFFSET {$offset}";
+        return $this;
+    }
+
+    public function whereLike(string $column, string $value): static
+    {
+        $this->where[] = "{$column} LIKE ?";
+        $this->bindings[] = '%' . $value . '%';
+        return $this;
+    }
+
+    public function whereIn(string $column, array $values): static
+    {
+        if (empty($values)) {
+            $this->where[] = '1 = 0';
+            return $this;
+        }
+        $placeholders = implode(',', array_fill(0, count($values), '?'));
+        $this->where[] = "{$column} IN ({$placeholders})";
+        $this->bindings = array_merge($this->bindings, array_values($values));
+        return $this;
+    }
+
+    public function whereRaw(string $condition, array $bindings = []): static
+    {
+        $this->where[] = $condition;
+        $this->bindings = array_merge($this->bindings, $bindings);
+        return $this;
+    }
+
     private function buildWhere()
     {
         if (empty($this->where)) {
@@ -61,7 +108,12 @@ class QueryBuilder
 
     public function get()
     {
-        $sql = "SELECT {$this->select} FROM {$this->table} ";
+        $from = $this->fromExpr ?? $this->table;
+        $sql = "SELECT {$this->select} FROM {$from} ";
+
+        if (!empty($this->joins)) {
+            $sql .= implode(' ', $this->joins) . ' ';
+        }
 
         $sql .= $this->buildWhere() . " ";
 
@@ -70,7 +122,11 @@ class QueryBuilder
         }
 
         if ($this->limit) {
-            $sql .= $this->limit;
+            $sql .= $this->limit . " ";
+        }
+
+        if ($this->offsetClause) {
+            $sql .= $this->offsetClause;
         }
 
         $stmt = $this->db->prepare($sql);
@@ -123,20 +179,26 @@ class QueryBuilder
         return $stmt->execute($allBindings);
     }
 
-    public function delete()
+    public function delete(): int
     {
         $sql = "DELETE FROM {$this->table} ";
 
         $sql .= $this->buildWhere();
 
         $stmt = $this->db->prepare($sql);
+        $stmt->execute($this->bindings);
 
-        return $stmt->execute($this->bindings);
+        return $stmt->rowCount();
     }
 
     public function count()
     {
-        $sql = "SELECT COUNT(*) as count FROM {$this->table} ";
+        $from = $this->fromExpr ?? $this->table;
+        $sql = "SELECT COUNT(*) as count FROM {$from} ";
+
+        if (!empty($this->joins)) {
+            $sql .= implode(' ', $this->joins) . ' ';
+        }
 
         $sql .= $this->buildWhere();
 

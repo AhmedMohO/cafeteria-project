@@ -47,12 +47,12 @@ function parseQuantity(value) {
 function getProductDataFromCard(card) {
   const idNode = card.querySelector('[data-id]');
   const nameNode = card.querySelector('[data-name]');
-  const iconNode = card.querySelector('[data-icon]');
+  const imageNode = card.querySelector('[data-image]');
   const priceNode = card.querySelector('[data-price]');
 
   const idRaw = idNode ? (idNode.getAttribute('data-id') || '0') : '0';
   const name = nameNode ? (nameNode.getAttribute('data-name') || '') : '';
-  const icon = iconNode ? (iconNode.getAttribute('data-icon') || '') : '';
+  const image = imageNode ? (imageNode.getAttribute('data-image') || '') : '';
   const rawPrice = priceNode ? (priceNode.getAttribute('data-price') || '0') : '0';
 
   const id = Number.parseInt(idRaw, 10);
@@ -62,7 +62,7 @@ function getProductDataFromCard(card) {
     return null;
   }
 
-  return { id, name, icon, price };
+  return { id, name, image, price };
 }
 
 function syncSelectedProductCards() {
@@ -98,7 +98,7 @@ function renderCart() {
   cartItemsContainer.innerHTML = cart.map((item, index) => `
     <div class="mb-2" data-index="${index}">
       <div class="d-flex align-items-center justify-content-between p-2 bg-light rounded-3">
-        <span class="fw-semibold">${escapeHtml(item.icon || '')} ${escapeHtml(item.name)}</span>
+        <span class="fw-semibold">${escapeHtml(item.image || item.icon || '☕')} ${escapeHtml(item.name)}</span>
         <div class="d-flex align-items-center gap-2">
           <input
             type="number"
@@ -135,15 +135,16 @@ function renderProductsList(productList) {
 
   productsContainer.innerHTML = productList.map((product) => {
     const id = Number.parseInt(product.id, 10) || 0;
-    const icon = product.icon || '';
+    const image = product.image || product.icon || '☕';
     const name = product.name || '';
     const price = formatPrice(product.price);
+    const imageHtml = `<div class="product-icon" style="font-size: 2.5rem;">${escapeHtml(image)}</div>`;
 
     return `
       <div class="col-6 col-md-4 col-xl-3">
         <div class="card border-0 shadow-sm text-center product-card h-100" style="border-radius:14px;">
           <div class="card-body p-3">
-            <div class="product-icon mb-1" data-icon="${escapeHtml(icon)}">${escapeHtml(icon)}</div>
+            <div class="product-icon mb-1" data-image="${escapeHtml(image)}">${imageHtml}</div>
             <div class="fw-semibold" data-id="${id}" data-name="${escapeHtml(name)}">${escapeHtml(name)}</div>
             <span class="badge-price"><span data-price="${price}">${price}</span> EGP</span>
           </div>
@@ -246,7 +247,7 @@ function applyLatestOrderToCart() {
   cart = latestOrder.items.map((item) => ({
     id: Number.parseInt(item.id, 10) || 0,
     name: String(item.name || '').trim(),
-    icon: String(item.icon || '').trim(),
+    image: String(item.image || item.icon || '').trim(),
     price: Number(item.price) > 0 ? Number(item.price) : 0,
     quantity: parseQuantity(item.quantity),
   })).filter((item) => item.id > 0 && item.name !== '' && item.price > 0);
@@ -279,7 +280,8 @@ function renderLatestOrder() {
 
   const previewItems = latestOrder.items.slice(0, 4).map((item) => {
     const quantity = parseQuantity(item.quantity);
-    return `<span class="badge rounded-pill text-bg-light border fw-normal px-2 py-1" style="font-size:0.8rem;">${escapeHtml(item.icon || '')} ${escapeHtml(item.name || '')} x${quantity}</span>`;
+    const image = item.image || item.icon || '☕';
+    return `<span class="badge rounded-pill text-bg-light border fw-normal px-2 py-1" style="font-size:0.8rem;">${escapeHtml(image)} ${escapeHtml(item.name || '')} x${quantity}</span>`;
   }).join('');
 
   const extraItemsCount = Math.max(0, latestOrder.items.length - 4);

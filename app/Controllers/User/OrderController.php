@@ -79,7 +79,7 @@ class OrderController extends Controller
 				$items[] = [
 					'id' => $productId,
 					'name' => $name,
-					'icon' => (string) ($row['image'] ?? ''),
+					'image' => Product::resolveIcon($name, (string) ($row['image'] ?? '')),
 					'price' => (float) ($row['price'] ?? 0),
 					'quantity' => (int) ($row['quantity'] ?? 0),
 				];
@@ -197,16 +197,19 @@ class OrderController extends Controller
 
 				$product = $productsById[$productId];
 				$price = (float) ($product['price'] ?? 0);
+				$productImage = trim((string) ($product['image'] ?? ''));
 				if ($price <= 0) {
 					http_response_code(400);
 					echo json_encode(['success' => false, 'message' => 'Invalid product price']);
 					return;
 				}
 
+				$productName = (string) ($product['name'] ?? '');
+
 				$normalizedItems[] = [
 					'product_id' => $productId,
-					'name' => (string) ($product['name'] ?? ''),
-					'image' => (string) ($product['image'] ?? ''),
+					'name' => $productName,
+					'image' => $productImage !== '' ? $productImage : $productName,
 					'price' => $price,
 					'quantity' => $quantity,
 				];
@@ -228,7 +231,7 @@ class OrderController extends Controller
 		} catch (\Throwable $e) {
 			error_log('placeOrder failed: ' . $e->getMessage());
 			http_response_code(500);
-			echo json_encode(['success' => false, 'message' => 'Failed to save order: ' . $e->getMessage()]);
+			echo json_encode(['success' => false, 'message' => 'Failed to save order. Please try again.']);
 		}
 	}
 
@@ -292,7 +295,11 @@ class OrderController extends Controller
 		$totalSpent = 0.0;
 		foreach ($orders as &$order) {
 			$orderId = (int) ($order['id'] ?? 0);
-			$order['items'] = $itemsByOrderId[$orderId] ?? [];
+			$order['items'] = array_map(static function (array $item): array {
+				$name = (string) ($item['name'] ?? '');
+				$item['image'] = Product::resolveIcon($name, (string) ($item['image'] ?? ''));
+				return $item;
+			}, $itemsByOrderId[$orderId] ?? []);
 			$order['room'] = trim(((string) ($order['room_no'] ?? '')) . (isset($order['room_name']) && $order['room_name'] !== '' ? ' - ' . (string) $order['room_name'] : ''));
 			$totalSpent += (float) ($order['total_price'] ?? 0);
 		}

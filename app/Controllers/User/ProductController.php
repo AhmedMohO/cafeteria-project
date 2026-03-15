@@ -32,11 +32,14 @@ class ProductController extends Controller
 			$rows = $productModel->searchAvailable($search);
 
 			$products = array_map(static function (array $row): array {
+				$name = (string) ($row['name'] ?? '');
+				$rawImage = (string) ($row['image'] ?? '');
+
 				return [
 					'id' => (int) ($row['id'] ?? 0),
-					'name' => (string) ($row['name'] ?? ''),
+					'name' => $name,
 					'price' => (float) ($row['price'] ?? 0),
-					'icon' => (string) (($row['image'] ?? '') !== '' ? $row['image'] : ($row['icon'] ?? '')),
+					'image' => Product::resolveIcon($name, $rawImage),
 				];
 			}, $rows);
 

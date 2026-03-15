@@ -123,14 +123,13 @@ $buildPageLink = static function (int $targetPage) use ($dateFrom, $dateTo, $app
 												<?php else: ?>
 													<?php foreach (($o['items'] ?? []) as $item): ?>
 														<?php
-														$icon = trim((string) ($item['image'] ?? ''));
-														$name = (string) ($item['name'] ?? 'Product');
-														$unitPrice = (float) ($item['price'] ?? 0);
-														$qty = (int) ($item['quantity'] ?? 0);
-														$useFallbackIcon = ($icon === '' || $icon === '?' || $icon === '??' || $icon === '???' || $icon === '�');
-														?>
-														<div class="text-center">
-															<div class="fs-1"><?= $useFallbackIcon ? '<i class="bi bi-cup-hot"></i>' : htmlspecialchars($icon) ?></div>
+													$icon = trim((string) ($item['image'] ?? '☕'));
+													$name = (string) ($item['name'] ?? 'Product');
+													$unitPrice = (float) ($item['price'] ?? 0);
+													$qty = (int) ($item['quantity'] ?? 0);
+													?>
+													<div class="text-center">
+														<div class="fs-1"><?= htmlspecialchars($icon) ?></div>
 															<div class="small"><?= htmlspecialchars($name) ?></div>
 															<span class="badge bg-warning text-dark"><?= number_format($unitPrice, 2) ?> EGP</span>
 															<div class="small text-muted">x<?= $qty ?></div>
