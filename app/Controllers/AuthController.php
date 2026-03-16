@@ -2,8 +2,9 @@
 
 namespace App\Controllers;
 
-use Core\Controller;
 use Core\Auth;
+use Core\Controller;
+use Core\Validator;
 
 class AuthController extends Controller
 {
@@ -16,18 +17,28 @@ class AuthController extends Controller
     {
         $email = $_POST['email'];
         $password = $_POST['password'];
-
+        $errors = Validator::validate($_POST, [
+            'email' => ['required', 'email'],
+            'password' => ['required', 'min:6']
+        ]);
+        if (!empty($errors)) {
+            $this->view('auth/login', ['errors' => $errors]);
+            return;
+        }
         if (Auth::attempt($email, $password)) {
-
-            if (Auth::role() === 'admin') {
-                header("Location: " . BASE_URL . "/admin/dashboard");
-            } else {
-                header("Location: " . BASE_URL . "/user/home");
+            if(Auth::user()->is_active == 0) {
+                Auth::logout();
+                $this->view('auth/login', ['errors' => ['Your account is inactive. Please contact support.']]);
+                return;
             }
-
+            if (Auth::role() === 'admin') {
+                $this->view("/admin/dashboard");
+            } else {
+                $this->view("/user/home");
+            }
             exit;
         }
-
+        $this->view('auth/login', ['errors' => ['Invalid email or password']]);
     }
 
 

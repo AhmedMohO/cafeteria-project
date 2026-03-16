@@ -11,7 +11,25 @@
         <p class="text-muted small">Sign in to your account</p>
       </div>
 
-<form method="POST" action="/cafeteria-project/public/login">
+      <form method="POST" action="/login">
+
+        <?php if (!empty($errors)): ?>
+
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <?php foreach ($errors as $fieldErrors): ?>
+                <?php if (is_array($fieldErrors)): ?>
+                  <?php foreach ($fieldErrors as $error): ?>
+                    <li><?= $error ?></li>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <li><?= $fieldErrors ?></li>
+                <?php endif; ?>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+
+        <?php endif; ?>
         <div class="mb-3">
           <label class="form-label fw-semibold">Email address</label>
           <div class="input-group">
