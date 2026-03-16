@@ -9,8 +9,7 @@ class AuthMiddleware
     public function handle()
     {
         if (!Auth::check()) {
-
-            header("Location: /login");
+            header("Location: " . BASE_URL . "/login"); 
             exit;
         }
     }

@@ -17,6 +17,11 @@ class Model
         return new QueryBuilder($this->db, $this->table);
     }
 
+    protected function queryTable(string $table): QueryBuilder
+    {
+        return new QueryBuilder($this->db, $table);
+    }
+    
     public function all()
     {
         return $this->query()->get();

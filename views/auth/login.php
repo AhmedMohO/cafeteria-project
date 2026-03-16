@@ -11,8 +11,7 @@
         <p class="text-muted small">Sign in to your account</p>
       </div>
 
-      <form method="POST" action="/login">
-
+<form method="POST" action="/cafeteria-project/public/login">
         <div class="mb-3">
           <label class="form-label fw-semibold">Email address</label>
           <div class="input-group">
@@ -53,12 +52,6 @@
         </button>
 
       </form>
-
-      <div class="text-center">
-        <a href="#" class="text-decoration-none small text-warning fw-semibold">
-          <i class="bi bi-question-circle me-1"></i>Forgot Password?
-        </a>
-      </div>
 
     </div>
   </div>

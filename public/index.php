@@ -2,7 +2,9 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+session_start();
 
+define('BASE_URL', '/cafeteria-project/public');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -12,14 +14,10 @@ require_once __DIR__ . '/../routes/web.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-$base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
+$uri = preg_replace('#^.*?/public(?:/index\.php)?#', '', $uri);
 
-if ($base !== '' && strpos($uri, $base) === 0) {
-	$uri = substr($uri, strlen($base));
-}
-
-if ($uri === '' || $uri === false) {
-	$uri = '/';
+if ($uri === '' || $uri === null) {
+    $uri = '/';
 }
 
 $method = $_SERVER['REQUEST_METHOD'];

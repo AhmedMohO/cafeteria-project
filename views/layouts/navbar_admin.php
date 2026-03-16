@@ -1,7 +1,11 @@
-<?php $current = basename($_SERVER['PHP_SELF']); ?>
+<?php
+
+use Core\Auth;
+
+ $current = basename($_SERVER['PHP_SELF']); ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom shadow-sm">
   <div class="container">
-    <a class="navbar-brand fw-bold text-warning fs-5" href="dashboard.php">
+    <a class="navbar-brand fw-bold text-warning fs-5" href="<?= BASE_URL ?>/admin/dashboard">
       <i class="bi bi-cup-hot-fill me-2"></i>Cafeteria
       <span class="badge bg-warning text-dark ms-1 align-middle" style="font-size:0.6rem!important;">ADMIN</span>
     </a>
@@ -50,6 +54,20 @@
         <a href="/logout" class="btn btn-outline-light btn-sm">
           <i class="bi bi-box-arrow-right me-1"></i> Logout
         </a>
+      <div class="d-flex align-items-center gap-2">
+        <?php 
+          $authUser = Auth::user();
+        ?>
+         <?php
+            if (!empty($authUser['pic'])) {
+                $avatar = '/' . ltrim($authUser['pic'], '/');
+            } else {
+                $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($authUser['name']) . '&background=f59e0b&color=fff&size=32&bold=true';
+            }
+        ?>
+
+        <img width="32" height="32" class="rounded-circle" src="<?= htmlspecialchars($avatar) ?>" alt="" onerror="this.src='https://ui-avatars.com/api/?name=<?= urlencode($authUser['name']) ?>&background=f59e0b&color=fff&size=32&bold=true';">
+        <span class="text-white fw-semibold"><?= htmlspecialchars($authUser['name'] ?? 'Admin') ?></span>
       </div>
     </div>
   </div>
