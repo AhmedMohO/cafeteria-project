@@ -48,16 +48,10 @@ $isOrders = preg_match('#/user/(my-orders|my_orders\.php|orders(?:\.php)?)$#', r
           </a>
         </li>
       </ul>
-      <div class="d-flex align-items-center gap-3">
-        <div class="d-flex align-items-center gap-2">
-          <span class="rounded-circle text-white">IA</span>
-          <span class="fw-semibold text-dark">{{Core\Auth::user()['name']}}</span>
-        </div>
-
-        <a href="/logout" class="btn btn-outline-danger btn-sm">
+      <div class="d-flex align-items-center gap-2">
+        <a href="<?= BASE_URL ?>/logout" class="btn btn-outline-danger btn-sm">
           <i class="bi bi-box-arrow-right me-1"></i> Logout
         </a>
-      <div class="d-flex align-items-center gap-2">
         <?php 
           $authUser = Auth::user();
         ?>

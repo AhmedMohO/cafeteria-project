@@ -15,46 +15,40 @@ use Core\Auth;
     <div class="collapse navbar-collapse" id="navAdmin">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link <?= $current === 'dashboard.php' ? 'active' : '' ?>" href="dashboard.php">
+          <a class="nav-link <?= $current==='dashboard.php'?'active':'' ?>" href="<?= BASE_URL ?>/admin/dashboard">
             <i class="bi bi-house me-1"></i>Home
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= in_array($current, ['products.php', 'add_product.php']) ? 'active' : '' ?>" href="products.php">
+          <a class="nav-link <?= in_array($current,['products.php','add_product.php'])?'active':'' ?>" href="<?= BASE_URL ?>/admin/products">
             <i class="bi bi-box-seam me-1"></i>Products
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= in_array($current, ['users.php', 'add_user.php']) ? 'active' : '' ?>" href="users.php">
+          <a class="nav-link <?= in_array($current,['users.php','add_user.php'])?'active':'' ?>" href="<?= BASE_URL ?>/admin/users">
             <i class="bi bi-people me-1"></i>Users
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current === 'manual_order.php' ? 'active' : '' ?>" href="manual_order.php">
+          <a class="nav-link <?= $current==='manual_order.php'?'active':'' ?>" href="<?= BASE_URL ?>/admin/manual-order">
             <i class="bi bi-pencil-square me-1"></i>Manual Order
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current === 'checks.php' ? 'active' : '' ?>" href="checks.php">
+          <a class="nav-link <?= $current==='checks.php'?'active':'' ?>" href="<?= BASE_URL ?>/admin/checks">
             <i class="bi bi-clipboard-check me-1"></i>Checks
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= $current === 'orders.php' ? 'active' : '' ?>" href="orders.php">
+          <a class="nav-link <?= $current==='orders.php'?'active':'' ?>" href="<?= BASE_URL ?>/admin/orders">
             <i class="bi bi-list-check me-1"></i>Orders
           </a>
         </li>
       </ul>
-      <div class="d-flex align-items-center gap-3">
-        <div class="d-flex align-items-center gap-2">
-          <span class="rounded-circle text-white">AD</span>
-          <span class="text-white fw-semibold">Admin</span>
-        </div>
-
-        <a href="/logout" class="btn btn-outline-light btn-sm">
+      <div class="d-flex align-items-center gap-2">
+        <a href="<?= BASE_URL ?>/logout" class="btn btn-outline-danger btn-sm">
           <i class="bi bi-box-arrow-right me-1"></i> Logout
         </a>
-      <div class="d-flex align-items-center gap-2">
         <?php 
           $authUser = Auth::user();
         ?>
