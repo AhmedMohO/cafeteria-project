@@ -20,7 +20,7 @@
     .product-image-fallback { background: #e9ecef; color: #6c757d; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
     .badge-price { background:#fff3cd; color:#856404; font-size:0.75rem; border-radius:20px; padding:2px 10px; display:inline-block; }
     .cart-panel { position: sticky; top: 20px; }
-    .table th { background-color: #f1f3f5; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .table th { font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
     .status-processing { background:#fff3cd; color:#856404; }
     .status-delivery { background:#d1ecf1; color:#0c5460; }
     .status-done { background:#d4edda; color:#155724; }
