@@ -26,7 +26,7 @@ class AuthController extends Controller
             return;
         }
         if (Auth::attempt($email, $password)) {
-            if(Auth::user()->is_active == 0) {
+            if(Auth::user()['is_active'] == 0) {
                 Auth::logout();
                 $this->view('auth/login', ['errors' => ['Your account is inactive. Please contact support.']]);
                 return;
