@@ -28,7 +28,6 @@ class AuthController extends Controller
             exit;
         }
 
-        echo "Invalid credentials";
     }
 
     public function logout()
