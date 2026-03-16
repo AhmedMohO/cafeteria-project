@@ -26,15 +26,15 @@ class AuthController extends Controller
             return;
         }
         if (Auth::attempt($email, $password)) {
-            if(Auth::user()['is_active'] == 0) {
+            if (Auth::user()['is_active'] == 0) {
                 Auth::logout();
                 $this->view('auth/login', ['errors' => ['Your account is inactive. Please contact support.']]);
                 return;
             }
             if (Auth::role() === 'admin') {
-                header('Location: /admin/dashboard');
+                header("Location: " . BASE_URL . "/admin/dashboard");
             } else {
-                header('Location: /user/home');
+                header("Location: " . BASE_URL . "/user/home");
             }
             exit;
         }
@@ -43,20 +43,20 @@ class AuthController extends Controller
 
 
     //for test
-//     public function login()
-// {
-//     $email    = $_POST['email'];
-//     $password = $_POST['password'];
+    //     public function login()
+    // {
+    //     $email    = $_POST['email'];
+    //     $password = $_POST['password'];
 
-//     $pdo  = \Core\Database::getInstance()->getConnection();
-//     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-//     $stmt->execute([$email]);
-//     $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+    //     $pdo  = \Core\Database::getInstance()->getConnection();
+    //     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+    //     $stmt->execute([$email]);
+    //     $user = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-//     var_dump($user);
-//     var_dump(password_verify($password, $user['password'] ?? ''));
-//     die();
-// }
+    //     var_dump($user);
+    //     var_dump(password_verify($password, $user['password'] ?? ''));
+    //     die();
+    // }
 
     public function logout()
     {
