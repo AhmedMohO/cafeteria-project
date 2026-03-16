@@ -42,7 +42,7 @@
 
   <div class="card border-0 shadow-sm rounded-4 mb-4">
     <div class="card-header bg-white border-0 pt-3 px-4"><h6 class="fw-bold mb-0">Users Summary</h6></div>
-    <div class="card-body p-0">
+    <div class="card-body p-0 table-responsive">
       <table class="table table-hover align-middle mb-0">
         <thead><tr><th class="ps-4">Name</th><th>Total Amount</th><th>Orders</th><th></th></tr></thead>
         <tbody>

@@ -16,7 +16,7 @@
 
   <!-- Table Card -->
   <div class="card border-0 shadow-sm" style="border-radius: 16px; overflow: hidden;">
-    <div class="card-body p-0">
+    <div class="card-body p-0 table-responsive">
       <table class="table table-hover align-middle mb-0">
         <thead>
           <tr>
