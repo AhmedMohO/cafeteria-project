@@ -146,32 +146,36 @@ class OrderController extends Controller
     // =========================================================================
     // GET /admin/manual-order
     // =========================================================================
-    public function manualForm(): void
-    {
-        $this->startSession();
-        $pdo = $this->db();
+   
+public function manualForm(): void
+{
+    $this->startSession();
+    $pdo = $this->db();
 
-        $users = (new User())
-            ->where('role', 'user')
-            ->orderBy('name', 'ASC')
-            ->get();
+    $users = (new User())
+        ->where('role', 'user')
+        ->orderBy('name', 'ASC')
+        ->get();
 
-        $products = $pdo->query("
-            SELECT  p.id, p.name, p.price, p.image,
-                    c.name AS category_name
-            FROM    products p
-            LEFT JOIN categories c ON c.id = p.category_id
-            WHERE   p.status = 'available'
-            ORDER BY c.name ASC, p.name ASC
-        ")->fetchAll(PDO::FETCH_ASSOC);
+    $rooms = $pdo->query("
+        SELECT id, no, name FROM rooms ORDER BY no ASC
+    ")->fetchAll(PDO::FETCH_ASSOC);
 
-        $rooms = $pdo->query("
-            SELECT id, no, name FROM rooms ORDER BY no ASC
-        ")->fetchAll(PDO::FETCH_ASSOC);
+    $search = trim($_GET['search'] ?? '');
+    $params = [];
+    $whereClause = "WHERE p.status = 'available'";
 
-        $this->view('admin/manual_order', compact('users', 'products', 'rooms')); // ✅ underscore
-    }
+    $products = $pdo->query("
+    SELECT  p.id, p.name, p.price, p.image,
+            c.name AS category_name
+    FROM    products p
+    LEFT JOIN categories c ON c.id = p.category_id
+    WHERE   p.status = 'available'
+    ORDER BY c.name ASC, p.name ASC
+")->fetchAll(PDO::FETCH_ASSOC);
 
+$this->view('admin/manual_order', compact('users', 'products', 'rooms'));
+}
     // =========================================================================
     // POST /admin/place-order
     // =========================================================================
