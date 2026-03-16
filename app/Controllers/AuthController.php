@@ -32,9 +32,9 @@ class AuthController extends Controller
                 return;
             }
             if (Auth::role() === 'admin') {
-                $this->view("/admin/dashboard");
+                header('Location: /admin/dashboard');
             } else {
-                $this->view("/user/home");
+                header('Location: /user/home');
             }
             exit;
         }
