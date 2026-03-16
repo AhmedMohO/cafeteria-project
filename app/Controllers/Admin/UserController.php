@@ -164,6 +164,10 @@ class UserController extends Controller
 
         $this->userOP->updateWhere('id', $id, $data);
 
+        if (Auth::user()['id'] == $id) {
+            $_SESSION['user'] = $this->userOP->find($id);
+        }
+
         header('Location: ' . BASE_URL . '/admin/users');
         exit;
     }

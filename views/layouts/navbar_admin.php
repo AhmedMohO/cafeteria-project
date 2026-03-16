@@ -49,7 +49,15 @@ use Core\Auth;
         <?php 
           $authUser = Auth::user();
         ?>
-        <img class="rounded-circle" src="https://ui-avatars.com/api/?name=<?= urlencode($authUser['name']) ?>&background=f59e0b&color=fff&size=32&bold=true" alt="">
+         <?php
+            if (!empty($authUser['pic'])) {
+                $avatar = '/' . ltrim($authUser['pic'], '/');
+            } else {
+                $avatar = 'https://ui-avatars.com/api/?name=' . urlencode($authUser['name']) . '&background=f59e0b&color=fff&size=32&bold=true';
+            }
+        ?>
+
+        <img width="32" height="32" class="rounded-circle" src="<?= htmlspecialchars($avatar) ?>" alt="" onerror="this.src='https://ui-avatars.com/api/?name=<?= urlencode($authUser['name']) ?>&background=f59e0b&color=fff&size=32&bold=true';">
         <span class="text-white fw-semibold"><?= htmlspecialchars($authUser['name'] ?? 'Admin') ?></span>
       </div>
     </div>

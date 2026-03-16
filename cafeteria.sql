@@ -18,9 +18,10 @@ CREATE TABLE users (
     role ENUM('admin','user') DEFAULT 'user',
     pic VARCHAR(255),
     room_id INT,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
     ext VARCHAR(20),
-    created_at TIMESTAMP NULL,
-    updated_at TIMESTAMP NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (room_id) REFERENCES rooms(id)
 );
 

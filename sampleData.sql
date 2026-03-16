@@ -10,7 +10,7 @@ INSERT INTO rooms (no, name, created_at, updated_at) VALUES
 
 -- Users (passwords are bcrypt hashes of 'password123')
 INSERT INTO users (name, email, password, role, pic, room_id, ext, created_at, updated_at) VALUES
-('Admin User',    'admin@cafeteria.com',   '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'admin', 'pics/admin.jpg',   1, '1000', NOW(), NOW()),
+('admin','admin@cafeteria.com','$2y$12$qg3A5MtNm3ZBUmzX7lkZzOtsxNpP0O8.D.Erq830fiOYcU6e0hhF.','admin','admin.jpg',5,'245',NOW(),NOW()),
 ('Alice Johnson', 'alice@cafeteria.com',   '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  'pics/alice.jpg',   2, '1001', NOW(), NOW()),
 ('Bob Smith',     'bob@cafeteria.com',     '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  'pics/bob.jpg',     3, '1002', NOW(), NOW()),
 ('Carol White',   'carol@cafeteria.com',   '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  'pics/carol.jpg',   4, '1003', NOW(), NOW()),
