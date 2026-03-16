@@ -15,11 +15,11 @@ Cafeteria is a custom PHP MVC web application for managing a cafeteria system. I
 
 | Layer      | Technology                          |
 |------------|-------------------------------------|
-| Backend    | PHP 8.2 — Custom MVC (no Laravel)   |
+| Backend    | PHP 8.2 — Custom MVC                |
 | Database   | MySQL via PDO                       |
 | Frontend   | Bootstrap 5.3 + Bootstrap Icons     |
 | Server     | Apache / PHP built-in server        |
-| Autoload   | Composer (PSR-4)                    |
+| Autoload   | Composer                            |
 
 ---
 
@@ -40,8 +40,10 @@ Make sure the following are installed before running the project:
 
 Place the project inside your XAMPP `htdocs` folder:
 
-```
-C:\xampp\htdocs\cafeteria-project\
+```powershell
+cd C:\xampp\htdocs
+git clone https://github.com/AhmedMohO/cafeteria-project.git
+cd cafeteria-project
 ```
 
 ### Step 2 — Install Composer dependencies
@@ -117,7 +119,7 @@ http://localhost:8888/login
 | Field    | Value                   |
 |----------|-------------------------|
 | Email    | `alice@cafeteria.com`   |
-| Password | `123456`                |
+| Password | `password123`           |
 | Role     | `user`                  |
 
 ---

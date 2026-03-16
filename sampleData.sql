@@ -10,11 +10,11 @@ INSERT INTO rooms (no, name, created_at, updated_at) VALUES
 
 -- Users (passwords are bcrypt hashes of '123456')
 INSERT INTO users (name, email, password, role, pic, room_id, ext, created_at, updated_at) VALUES
-('admin','admin@cafeteria.com','$2y$12$qg3A5MtNm3ZBUmzX7lkZzOtsxNpP0O8.D.Erq830fiOYcU6e0hhF.','admin','/upload/profiles/admin.jpeg',5,'245',NOW(),NOW()),
-('Alice Johnson', 'alice@cafeteria.com',   '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  '/upload/profiles/Alice.jpeg',   2, '1001', NOW(), NOW()),
-('Bob Smith',     'bob@cafeteria.com',     '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  '/upload/profiles/Bob.jpeg',     3, '1002', NOW(), NOW()),
-('Carol White',   'carol@cafeteria.com',   '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  '/upload/profiles/Carol.jpeg',   4, '1003', NOW(), NOW()),
-('David Brown',   'david@cafeteria.com',   '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  '/upload/profiles/David.jpeg',   5, '1004', NOW(), NOW());
+('admin','admin@cafeteria.com','$2y$12$qg3A5MtNm3ZBUmzX7lkZzOtsxNpP0O8.D.Erq830fiOYcU6e0hhF.','admin','uploads/profiles/admin.jpeg',5,'245',NOW(),NOW()),
+('Alice Johnson', 'alice@cafeteria.com',   '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  'uploads/profiles/Alice.jpeg',   2, '1001', NOW(), NOW()),
+('Bob Smith',     'bob@cafeteria.com',     '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  'uploads/profiles/Bob.jpeg',     3, '1002', NOW(), NOW()),
+('Carol White',   'carol@cafeteria.com',   '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  'uploads/profiles/Carol.jpeg',   4, '1003', NOW(), NOW()),
+('David Brown',   'david@cafeteria.com',   '$2y$10$zWRV5LZ6jWzU6/unJVMHhuULfmlKmamF2e6Z/osz1Y43M7eYZ9BO.', 'user',  'uploads/profiles/David.jpeg',   5, '1004', NOW(), NOW());
 
 -- Categories
 INSERT INTO categories (name, created_at, updated_at) VALUES

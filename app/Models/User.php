@@ -31,7 +31,7 @@ class User extends Model
         return (int) $q->count() > 0;
     }
 
-    public function getUsers(string $search = '', string $status = 'all', int $page = 1, int $perPage = 10): array
+    public function getUsers(string $search = '', string $status = 'all', ?int $room_id = null, int $page = 1, int $perPage = 10): array
     {
         $offset = ($page - 1) * $perPage;
         $perPage = (int) $perPage;
@@ -57,6 +57,11 @@ class User extends Model
             $bindings[] = $like;
         }
 
+        if ($room_id !== null) {
+            $sql .= " AND u.room_id = ?";
+            $bindings[] = $room_id;
+        }
+
         $sql .= " ORDER BY u.created_at DESC LIMIT $perPage OFFSET $offset";
 
         $stmt = $this->db->prepare($sql);
@@ -64,7 +69,7 @@ class User extends Model
         return $stmt->fetchAll();
     }
 
-    public function countUsers(string $search = '', string $status = 'all'): int
+    public function countUsers(string $search = '', string $status = 'all', ?int $room_id = null): int
     {
         if ($search === '') {
             $q = $this->query()->where('role', 'user');
@@ -88,8 +93,14 @@ class User extends Model
             $sql .= " AND is_active = 0";
         }
 
+        $params = [$like, $like];
+        if ($room_id !== null) {
+            $sql .= " AND room_id = ?";
+            $params[] = $room_id;
+        }
+
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$like, $like]);
+        $stmt->execute($params);
         return (int) $stmt->fetch()['cnt'];
     }
 

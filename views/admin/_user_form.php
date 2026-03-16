@@ -61,7 +61,7 @@ function fieldVal(string $key, array $old, array $user): string {
 
     <div class="col-md-6">
       <label class="form-label fw-semibold">Room</label>
-      <select name="room_id" class="form-select">
+      <select name="room_id" class="form-select <?= isset($errors['room_id']) ? 'is-invalid' : '' ?>">
         <option value="">— No Room —</option>
         <?php foreach ($rooms as $room): ?>
           <option value="<?= $room['id'] ?>"
@@ -70,6 +70,9 @@ function fieldVal(string $key, array $old, array $user): string {
           </option>
         <?php endforeach; ?>
       </select>
+      <?php if (isset($errors['room_id'])): ?>
+        <div class="invalid-feedback"><?= htmlspecialchars($errors['room_id']) ?></div>
+      <?php endif; ?>
     </div>
 
     <div class="col-md-6">

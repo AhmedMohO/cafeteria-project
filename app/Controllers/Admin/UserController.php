@@ -23,12 +23,15 @@ class UserController extends Controller
         $users = new User();
         $search = trim($_GET['search'] ?? '');
         $status = $_GET['status'] ?? 'all';
+        $room_id = ($_GET['room_id'] ?? 'all') !== 'all' ? (int)$_GET['room_id'] : null;
         $page = max(1, (int)($_GET['page'] ?? 1));
-        $total = $users->countUsers($search, $status);
+        
+        $rooms = (new Room())->all();
+        $total = $users->countUsers($search, $status, $room_id);
         $totalPages = (int)ceil($total / 10);
-        $users = $users->getUsers($search, $status, $page, 10);
+        $users = $users->getUsers($search, $status, $room_id, $page, 10);
 
-        $this->view('admin/users', compact('users', 'search', 'status', 'page', 'totalPages', 'total', 'error'));
+        $this->view('admin/users', compact('users', 'search', 'status', 'room_id', 'rooms', 'page', 'totalPages', 'total', 'error'));
     }
 
     public function create()
@@ -60,6 +63,10 @@ class UserController extends Controller
         if ($password === '') $errors['password'] = 'Password is required.';
         elseif (strlen($password) < 6) $errors['password'] = 'Minimum 6 characters.';
         elseif ($password !== $confirm) $errors['password_confirm'] = 'Passwords do not match.';
+        
+        if ($room_id !== '' && !(new Room())->find((int)$room_id)) {
+            $errors['room_id'] = 'Selected room does not exist.';
+        }
 
         if ($errors) {
             $_SESSION['errors'] = $errors;
@@ -134,6 +141,10 @@ class UserController extends Controller
         elseif ($this->userOP->emailExists($email, $id)) $errors['email'] = 'Email already in use.';
         if ($password !== '' && strlen($password) < 6) $errors['password'] = 'Minimum 6 characters.';
         elseif ($password !== '' && $password !== $confirm) $errors['password_confirm'] = 'Passwords do not match.';
+
+        if ($room_id !== '' && !(new Room())->find((int)$room_id)) {
+            $errors['room_id'] = 'Selected room does not exist.';
+        }
 
         if ($errors) {
             $_SESSION['errors'] = $errors;
