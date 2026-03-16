@@ -1,8 +1,8 @@
-CREATE DATABASE cafeteria;
+CREATE DATABASE IF NOT EXISTS cafeteria;
 
 USE cafeteria;
 
-CREATE TABLE rooms (
+CREATE TABLE IF NOT EXISTS rooms (
     id INT AUTO_INCREMENT PRIMARY KEY,
     no VARCHAR(50),
     name VARCHAR(100),
@@ -10,7 +10,7 @@ CREATE TABLE rooms (
     updated_at TIMESTAMP NULL
 );
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
     email VARCHAR(100) UNIQUE,
@@ -25,14 +25,14 @@ CREATE TABLE users (
     FOREIGN KEY (room_id) REFERENCES rooms(id)
 );
 
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL
 );
 
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     category_id INT,
     name VARCHAR(150),
@@ -44,7 +44,7 @@ CREATE TABLE products (
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     room_id INT,
@@ -57,7 +57,7 @@ CREATE TABLE orders (
     FOREIGN KEY (room_id) REFERENCES rooms(id)
 );
 
-CREATE TABLE order_items (
+CREATE TABLE IF NOT EXISTS order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT,
     product_id INT,
@@ -70,9 +70,3 @@ CREATE TABLE order_items (
     FOREIGN KEY (order_id) REFERENCES orders(id),
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
-
-ALTER TABLE users ADD COLUMN is_active TINYINT(1) NOT NULL DEFAULT 1;
-
-INSERT INTO users (name, email, password, role, pic, room_id, ext, created_at) VALUES
-('admin','admin@cafeteria.com','$2y$12$qg3A5MtNm3ZBUmzX7lkZzOtsxNpP0O8.D.Erq830fiOYcU6e0hhF.','admin','admin.jpg',5,'245',NOW());
-pass : 123456
